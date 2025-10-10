@@ -12,6 +12,8 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [name, setName] = useState('')
+  const [schoolId, setSchoolId] = useState('')
   const [role, setRole] = useState<UserRole>('student')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -20,22 +22,27 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
   const validateForm = () => {
     if (!email || !password) {
-      setError('Please fill in all required fields')
+      setError('Por favor, rellena todos los campos obligatorios')
+      return false
+    }
+
+    if (mode === 'signup' && (!name || !schoolId)) {
+      setError('Por favor, rellena todos los campos obligatorios')
       return false
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Please enter a valid email address')
+      setError('Por favor, introduce una dirección de email válida')
       return false
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long')
+      setError('La contraseña debe tener al menos 6 caracteres')
       return false
     }
 
     if (mode === 'signup' && password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('Las contraseñas no coinciden')
       return false
     }
 
@@ -57,7 +64,8 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
           password,
           options: {
             data: {
-              role: role
+              role: role,
+              name: name
             }
           }
         })
@@ -65,14 +73,16 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
         if (error) throw error
 
         if (data.user) {
-          // Create profile in profiles table
+          // Create profile in users table
           const { error: profileError } = await supabase
-            .from('profiles')
+            .from('users')
             .insert([
               {
                 id: data.user.id,
                 email: data.user.email,
-                role: role
+                name: name,
+                role: role,
+                school_id: schoolId ? parseInt(schoolId) : null
               }
             ])
 
@@ -83,7 +93,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
           // Show success message for email confirmation
           if (!data.session) {
-            setError('Please check your email to confirm your account before logging in.')
+            setError('Por favor, revisa tu email para confirmar tu cuenta antes de iniciar sesión.')
             return
           }
         }
@@ -99,13 +109,13 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
       onClose()
     } catch (error: any) {
       if (error.message.includes('Invalid login credentials')) {
-        setError('Invalid email or password. Please try again.')
+        setError('Email o contraseña incorrectos. Por favor, inténtalo de nuevo.')
       } else if (error.message.includes('Email not confirmed')) {
-        setError('Please check your email and confirm your account before logging in.')
+        setError('Por favor, revisa tu email y confirma tu cuenta antes de iniciar sesión.')
       } else if (error.message.includes('User already registered')) {
-        setError('An account with this email already exists. Please try logging in instead.')
+        setError('Ya existe una cuenta con este email. Por favor, intenta iniciar sesión.')
       } else {
-        setError(error.message || 'An unexpected error occurred. Please try again.')
+        setError(error.message || 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.')
       }
     } finally {
       setLoading(false)
@@ -135,7 +145,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-900">
-              {mode === 'login' ? 'Welcome Back' : 'Create Account'}
+              {mode === 'login' ? 'Bienvenido de nuevo' : 'Crear cuenta'}
             </h3>
             <button
               onClick={onClose}
@@ -149,9 +159,26 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {mode === 'signup' && (
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre completo *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  placeholder="Introduce tu nombre completo"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
+                />
+              </div>
+            )}
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
+                Dirección de email *
               </label>
               <input
                 type="email"
@@ -159,14 +186,14 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="Enter your email"
+                placeholder="Introduce tu email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
+                Contraseña *
               </label>
               <div className="relative">
                 <input
@@ -175,7 +202,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="Enter your password"
+                  placeholder="Introduce tu contraseña"
                   className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
                   />
                 <button
@@ -197,7 +224,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
               </div>
               {mode === 'signup' && (
                 <p className="mt-1 text-xs text-gray-500">
-                  Password must be at least 6 characters long
+                  La contraseña debe tener al menos 6 caracteres
                 </p>
               )}
             </div>
@@ -205,7 +232,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
             {mode === 'signup' && (
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password
+                  Confirmar contraseña *
                 </label>
                 <div className="relative">
                   <input
@@ -214,8 +241,9 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    placeholder="Confirm your password"
-className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"                  />
+                    placeholder="Confirma tu contraseña"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
+                  />
                   <button
                     type="button"
                     onClick={toggleConfirmPasswordVisibility}
@@ -238,18 +266,46 @@ className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm fo
 
             {mode === 'signup' && (
               <div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                  I am a:
+                <label htmlFor="schoolId" className="block text-sm font-medium text-gray-700 mb-1">
+                  ID de la escuela *
                 </label>
-                <select
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value as UserRole)}
+                <input
+                  type="number"
+                  id="schoolId"
+                  value={schoolId}
+                  onChange={(e) => setSchoolId(e.target.value)}
+                  required
+                  placeholder="Introduce el ID de tu escuela"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
-                >
-                  <option value="student">Student</option>
-                  <option value="teacher">Teacher</option>
-                </select>
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Contacta con tu administrador para obtener el ID de tu escuela
+                </p>
+              </div>
+            )}
+
+            {mode === 'signup' && (
+              <div>
+                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                  Soy un/a: *
+                </label>
+                <div className="relative">
+                  <select
+                    id="role"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value as UserRole)}
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white appearance-none cursor-pointer"
+                  >
+                    <option value="student">Estudiante</option>
+                    <option value="teacher">Profesor/a</option>
+                  </select>
+                  {/* Custom dropdown arrow */}
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -275,10 +331,10 @@ className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm fo
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  {mode === 'login' ? 'Signing in...' : 'Creating account...'}
+                  {mode === 'login' ? 'Iniciando sesión...' : 'Creando cuenta...'}
                 </>
               ) : (
-                mode === 'login' ? 'Sign In' : 'Create Account'
+                mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'
               )}
             </button>
           </form>
@@ -289,8 +345,8 @@ className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm fo
               className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
             >
               {mode === 'login' 
-                ? "Don't have an account? Sign up" 
-                : "Already have an account? Sign in"
+                ? "¿No tienes cuenta? Regístrate" 
+                : "¿Ya tienes cuenta? Inicia sesión"
               }
             </button>
           </div>

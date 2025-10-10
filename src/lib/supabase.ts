@@ -10,6 +10,42 @@ export type UserRole = 'teacher' | 'student'
 export interface UserProfile {
   id: string
   email: string
+  name: string
   role: UserRole
+  school_id: number | null
+  created_at: string
+}
+
+export interface School {
+  id: number
+  name: string
+  location: string
+  created_at: string
+}
+
+export interface Group {
+  id: number
+  name: string
+  teacher_id: string
+  school_id: number
+  created_at: string
+}
+
+export interface GroupMember {
+  id: number
+  group_id: number
+  student_id: string
+  joined_at: string
+}
+
+export interface TrainingSession {
+  id: number
+  student_id: string
+  group_id: number | null
+  date: string
+  activity_type: string
+  duration: number
+  intensity: string
+  notes: string | null
   created_at: string
 }
