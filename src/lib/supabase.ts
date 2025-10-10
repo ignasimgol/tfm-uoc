@@ -1,10 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://rvhrzldmkrifmgapccps.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2aHJ6bGRta3JpZm1nYXBjY3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MzEwMTksImV4cCI6MjA3NTQwNzAxOX0.Eo8-q165R8d7UyGL9HpZw4iUiKc-vbKRGXcOOvWd_Dk'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables')
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+// ... existing code ...
 export type UserRole = 'teacher' | 'student'
 
 export interface UserProfile {
@@ -12,40 +17,41 @@ export interface UserProfile {
   email: string
   name: string
   role: UserRole
-  school_id: number | null
+  school_id: string | null
+  is_admin?: boolean
   created_at: string
 }
 
 export interface School {
-  id: number
+  id: string
   name: string
-  location: string
+  location: string | null
+  invite_code: string
   created_at: string
 }
 
 export interface Group {
-  id: number
+  id: string
   name: string
+  school_id: string
   teacher_id: string
-  school_id: number
   created_at: string
 }
 
 export interface GroupMember {
-  id: number
-  group_id: number
+  id: string
+  group_id: string
   student_id: string
   joined_at: string
 }
 
 export interface TrainingSession {
-  id: number
+  id: string
   student_id: string
-  group_id: number | null
+  group_id: string
   date: string
   activity_type: string
   duration: number
-  intensity: string
   notes: string | null
   created_at: string
 }

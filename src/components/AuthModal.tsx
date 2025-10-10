@@ -13,7 +13,6 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [name, setName] = useState('')
-  const [schoolId, setSchoolId] = useState('')
   const [role, setRole] = useState<UserRole>('student')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -26,8 +25,8 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
       return false
     }
 
-    if (mode === 'signup' && (!name || !schoolId)) {
-      setError('Por favor, rellena todos los campos obligatorios')
+    if (mode === 'signup' && !name) {
+      setError('Por favor, introduce tu nombre')
       return false
     }
 
@@ -59,6 +58,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
     try {
       if (mode === 'signup') {
+        // First, sign up the user
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -73,7 +73,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
         if (error) throw error
 
         if (data.user) {
-          // Create profile in users table
+          // Create user profile with school_id set to NULL
           const { error: profileError } = await supabase
             .from('users')
             .insert([
@@ -82,7 +82,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                 email: data.user.email,
                 name: name,
                 role: role,
-                school_id: schoolId ? parseInt(schoolId) : null
+                school_id: null // Set to NULL by default
               }
             ])
 
@@ -91,7 +91,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
             // Don't throw here as the user was created successfully
           }
 
-          // Show success message for email confirmation
+          // Show success message for email confirmation if needed
           if (!data.session) {
             setError('Por favor, revisa tu email para confirmar tu cuenta antes de iniciar sesión.')
             return
@@ -261,26 +261,6 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                     )}
                   </button>
                 </div>
-              </div>
-            )}
-
-            {mode === 'signup' && (
-              <div>
-                <label htmlFor="schoolId" className="block text-sm font-medium text-gray-700 mb-1">
-                  ID de la escuela *
-                </label>
-                <input
-                  type="number"
-                  id="schoolId"
-                  value={schoolId}
-                  onChange={(e) => setSchoolId(e.target.value)}
-                  required
-                  placeholder="Introduce el ID de tu escuela"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
-                />
-                <p className="mt-1 text-xs text-gray-500">
-                  Contacta con tu administrador para obtener el ID de tu escuela
-                </p>
               </div>
             )}
 

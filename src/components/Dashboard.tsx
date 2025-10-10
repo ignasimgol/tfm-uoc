@@ -18,7 +18,7 @@ const Dashboard = ({ user }: DashboardProps) => {
   const fetchProfile = async () => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')
         .select('*')
         .eq('id', user.id)
         .single()
@@ -55,10 +55,15 @@ const Dashboard = ({ user }: DashboardProps) => {
               <span className="ml-4 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
                 {profile?.role === 'teacher' ? 'Teacher' : 'Student'}
               </span>
+              {profile?.is_admin && (
+                <span className="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                  Admin
+                </span>
+              )}
             </div>
             
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Welcome, {user.email}</span>
+              <span className="text-gray-700">Welcome, {profile?.name || user.email}</span>
               <button
                 onClick={handleSignOut}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
