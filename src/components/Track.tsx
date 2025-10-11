@@ -249,7 +249,7 @@ function Track({ user }: { user: User }) {
                       onClick={() => openDay(d)}
                       aria-current={isToday ? 'date' : undefined}
                       className={`relative h-16 rounded-md border-2 transition
-                        ${hasActivity ? 'border-blue-400 bg-blue-50 hover:bg-blue-100' : 'border-gray-300 bg-white hover:bg-gray-50'}
+                        ${hasActivity ? 'border-green-400 bg-green-50 hover:bg-green-100' : 'border-gray-300 bg-white hover:bg-gray-50'}
                         ${isToday ? 'border-green-600 ring-2 ring-green-300' : ''}
                       `}
                     >

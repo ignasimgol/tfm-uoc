@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 
 type UserRole = 'teacher' | 'student'
 
@@ -10,6 +11,7 @@ interface SidebarProps {
 
 const Sidebar = ({ role, onOpenChange }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(true)
+  const navigate = useNavigate()
 
   const teacherItems = [
     { label: 'Profile', to: '/profile', icon: ProfileIcon },
@@ -100,8 +102,21 @@ const Sidebar = ({ role, onOpenChange }: SidebarProps) => {
           </nav>
 
           {/* Footer (optional) */}
-          <div className="px-4 py-3 border-t border-gray-200 text-xs text-gray-500">
+          <div className="px-4 py-3 border-t border-gray-200 text-xs text-gray-500 flex items-center justify-between">
             <span>Role: {role}</span>
+            <button
+              aria-label="Sign out"
+              className="inline-flex items-center gap-2 text-xs font-medium text-red-600 hover:text-red-700"
+              onClick={async () => {
+                await supabase.auth.signOut()
+                setIsOpen(false)
+                onOpenChange?.(false)
+                navigate('/')
+              }}
+            >
+              <SignOutIcon />
+              Sign out
+            </button>
           </div>
         </div>
       </aside>
@@ -161,6 +176,17 @@ function RewardsIcon() {
       <path
         fill="currentColor"
         d="M12 2l2.39 4.84L20 7.27l-3.64 3.54L17.27 16L12 13.77L6.73 16l.91-5.19L4 7.27l5.61-.43L12 2z"
+      />
+    </svg>
+  )
+}
+
+function SignOutIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" className="text-current" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M16 13v-2H7V8l-5 4l5 4v-3h9zm3-10H9a2 2 0 0 0-2 2v3h2V5h10v14H9v-3H7v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"
       />
     </svg>
   )
