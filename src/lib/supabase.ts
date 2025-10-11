@@ -9,7 +9,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// ... existing code ...
 export type UserRole = 'teacher' | 'student'
 
 export interface UserProfile {
@@ -52,6 +51,7 @@ export interface TrainingSession {
   date: string
   activity_type: string
   duration: number
+  intensity: number // 1..5 (enjoyment)
   notes: string | null
   created_at: string
 }

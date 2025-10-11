@@ -7,6 +7,7 @@ import LandingPage from './components/LandingPage'
 import Dashboard from './components/Dashboard'
 import SchoolLinking from './components/SchoolLinking'
 import Track from './components/Track'
+import GroupsManager from './components/GroupsManager'
 import './index.css'
 
 function App() {
@@ -104,15 +105,13 @@ function App() {
             path="/dashboard" 
             element={<Dashboard user={user} />} 
           />
-          <Route
-            path="/track"
-            element={
-              // Track is a standalone student page (no user prop needed here)
-              // If you ever need user info inside Track, you can pass it.
-              // For now it uses localStorage only.
-              // Import added at the top: `import Track from './components/Track'`
-              <Track />
-            }
+          <Route 
+            path="/track" 
+            element={<Track user={user} />} 
+          />
+          <Route 
+            path="/groups" 
+            element={<GroupsManager user={user} />} 
           />
         </Routes>
       </div>

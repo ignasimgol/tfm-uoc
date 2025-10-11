@@ -1,15 +1,28 @@
 import { useState, useEffect } from 'react'
 
 export type ActivityType =
-  | 'running'
+    | 'running'
   | 'basketball'
   | 'football'
   | 'volleyball'
-  | 'cycling'
+  | 'hockey'
+  | 'handball'
+  | 'bikeSports'
   | 'gym'
   | 'yoga'
   | 'swimming'
-  | 'other'
+  | 'climbing'
+  | 'trekking'
+  | 'pilates'
+  | 'dance'
+  | 'combatSports'
+  | 'surfing'
+  | 'raquetSports'
+  | 'skating'
+  | 'walking'
+
+
+
 
 export interface Activity {
   date: string // YYYY-MM-DD
@@ -31,11 +44,22 @@ const activityLabels: Record<ActivityType, string> = {
   basketball: 'Basketball',
   football: 'Football',
   volleyball: 'Volleyball',
-  cycling: 'Cycling',
+  hockey: 'Hockey',
+  handball: 'Handball',
+  bikeSports: 'Bike Sports',
   gym: 'Gym',
   yoga: 'Yoga',
   swimming: 'Swimming',
-  other: 'Other',
+  climbing: 'Climbing',
+  trekking: 'Trekking',
+  pilates: 'Pilates',
+  dance: 'Dance',
+  combatSports: 'Combat Sports',
+  surfing: 'Surfing',
+  raquetSports: 'Raquet Sports',
+  skating: 'Skating',
+  walking: 'Walking',
+
 }
 
 export default function AddActivity({ date, initialActivity, onSave, onClose }: AddActivityProps) {

@@ -18,8 +18,8 @@ const Sidebar = ({ role, onOpenChange }: SidebarProps) => {
 
   const studentItems = [
     { label: 'Profile', to: '/profile', icon: ProfileIcon },
-    { label: 'Track', to: '/track', icon: TrackIcon },
-    { label: 'Rewards', to: '/rewards', icon: RewardsIcon },
+    { label: 'Track', to: '/track', icon: PencilIcon },
+    { label: 'Summary', to: '/summary', icon: RewardsIcon },
   ]
 
   const navItems = role === 'teacher' ? teacherItems : studentItems
@@ -144,12 +144,12 @@ function GroupsIcon() {
   )
 }
 
-function TrackIcon() {
+function PencilIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" className="text-gray-700">
+    <svg width="20" height="20" viewBox="0 0 24 24" className="text-gray-700" aria-hidden="true">
       <path
         fill="currentColor"
-        d="M13 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3zm0 2v7l6 3l1-1.73l-5-2.27V5h-2z"
+        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
       />
     </svg>
   )
