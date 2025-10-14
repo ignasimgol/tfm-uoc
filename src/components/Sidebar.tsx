@@ -63,7 +63,7 @@ const Sidebar = ({ role, onOpenChange }: SidebarProps) => {
         <div className="h-full flex flex-col">
           {/* Header con botón de cerrar en desktop */}
           <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-500">Application</h2>
+            <h2 className="text-sm font-semibold text-gray-500">STEP</h2>
             <button
               className="hidden md:inline-flex text-gray-600 hover:text-gray-900"
               onClick={() => {

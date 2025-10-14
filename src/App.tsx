@@ -102,7 +102,7 @@ function App() {
             element={<Dashboard user={user} />} 
           />
           <Route 
-            path="/dashboard" 
+            path="/profile" 
             element={<Dashboard user={user} />} 
           />
           <Route 

@@ -24,15 +24,12 @@ const LandingPage = () => {
               <div className="flex justify-between items-center">
                 {/* Logo */}
                 <div className="flex-shrink-0">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#2E7915] via-purple-500 to-pink-500 flex items-center justify-center">
-                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                  </div>
+                  <img
+                    src="/step-black.png"
+                    alt="Step logo"
+                    className=" h-10"
+                  />
                 </div>
-
                 {/* Navigation Links */}
                 <div className="hidden md:flex items-center space-x-8">
                   <a href="#home" className="text-gray-800 hover:text-[#2E7915] font-medium transition-colors">
