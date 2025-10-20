@@ -134,7 +134,7 @@ function Dashboard({ user }: DashboardProps) {
             <div className="border-4 border-dashed border-gray-200 rounded-lg p-8">
               <div className="text-center">
                 <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
-                  Welcome to your Dashboard!
+                  Welcome {profile?.name || user.email}!
                 </h2>
                 
                 {profile?.role === 'teacher' ? (
@@ -170,12 +170,6 @@ function Dashboard({ user }: DashboardProps) {
                     </div>
                   </div>
                 )}
-
-                <div className="mt-8">
-                  <button className="bg-green-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-lg font-medium">
-                    {profile?.role === 'teacher' ? 'Create New Workout' : 'Start Exercise'}
-                  </button>
-                </div>
               </div>
             </div>
 

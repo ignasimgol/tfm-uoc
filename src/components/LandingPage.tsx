@@ -155,9 +155,65 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
+
+        {/* About Section */}
+        <section id="about" className="mt-24">
+          <div className="bg-white border-2 border-gray-800 rounded-2xl shadow-sm">
+            <div className="px-8 py-10 md:px-12">
+              <h2 className="text-3xl font-bold text-gray-900">About STEP</h2>
+              <p className="mt-4 text-gray-600 max-w-3xl">
+                STEP helps teachers and students collaborate on fitness goals. Teachers can manage groups and
+                monitor activity, while students easily log workouts and see their progress over time.
+              </p>
+
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="p-5 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Track & Analyze</h3>
+                  <p className="mt-2 text-gray-600">
+                    Log training sessions and review monthly summaries to understand your progress.
+                  </p>
+                </div>
+                <div className="p-5 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Teacher Tools</h3>
+                  <p className="mt-2 text-gray-600">
+                    Organize groups, view student activity, and guide exercise plans efficiently.
+                  </p>
+                </div>
+                <div className="p-5 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Simple & Fast</h3>
+                  <p className="mt-2 text-gray-600">
+                    Clean UI, quick actions, and a smooth experience on any device.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
-      {/* Auth Modal */}
+      {/* Footer */}
+      <footer className="mt-24 bg-white border-t-2 border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-8 flex flex-col md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center space-x-3">
+              <img src="/step-black.png" alt="Step logo" className="h-8" />
+            </div>
+            <nav className="mt-4 md:mt-0 flex items-center space-x-6">
+              <a href="#home" className="text-gray-600 hover:text-[#2E7915]">Home</a>
+              <a href="#about" className="text-gray-600 hover:text-[#2E7915]">About</a>
+              <a href="#contact" className="text-gray-600 hover:text-[#2E7915]">Contact</a>
+            </nav>
+          </div>
+          <div id="contact" className="pb-8 text-sm text-gray-600">
+            <p>
+              Contact us: <a href="mailto:ignasimgol@gmail.com" className="underline hover:text-[#2E7915]">ignasimgol@gmail.com</a>
+            </p>
+            <p className="mt-2">© {new Date().getFullYear()} STEP. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Auth Modal (fixes unused warnings) */}
       {showAuthModal && (
         <AuthModal
           mode={authMode}
