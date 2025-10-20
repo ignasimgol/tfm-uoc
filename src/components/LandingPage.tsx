@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import AuthModal from './AuthModal'
+import { IoStatsChart } from 'react-icons/io5'
+import { PiChalkboardTeacherFill } from 'react-icons/pi'
+import { FaCheck } from 'react-icons/fa'
 
 const LandingPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -32,13 +35,13 @@ const LandingPage = () => {
                 </div>
                 {/* Navigation Links */}
                 <div className="hidden md:flex items-center space-x-8">
-                  <a href="#home" className="text-gray-800 hover:text-[#2E7915] font-medium transition-colors">
+                  <a href="#home" className="text-gray-800 hover:text-[#2E7915] hover:underline font-medium transition-colors">
                     Home
                   </a>
-                  <a href="#about" className="text-gray-600 hover:text-[#2E7915] font-medium transition-colors">
+                  <a href="#about" className="text-gray-600 hover:text-[#2E7915] hover:underline font-medium transition-colors">
                     About
                   </a>
-                  <a href="#contact" className="text-gray-600 hover:text-[#2E7915] font-medium transition-colors">
+                  <a href="#contact" className="text-gray-600 hover:text-[#2E7915] hover:underline font-medium transition-colors">
                     Contact
                   </a>
                 </div>
@@ -47,7 +50,7 @@ const LandingPage = () => {
                 <div className="flex items-center space-x-4">
                   <button
                     onClick={() => handleAuthClick('login')}
-                    className="text-gray-600 hover:text-[#2E7915] font-medium transition-colors"
+                    className="text-gray-600 hover:text-[#2E7915] hover:underline font-medium transition-colors"
                   >
                     Login
                   </button>
@@ -108,9 +111,7 @@ const LandingPage = () => {
                 <div className="-mt-6">
                   <div>
                     <span className="inline-flex items-center justify-center p-3 bg-[#2E7915] rounded-md shadow-lg">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
+                      <IoStatsChart size={24} className="text-white" aria-hidden="true" />
                     </span>
                   </div>
                   <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">Progress Tracking</h3>
@@ -126,9 +127,7 @@ const LandingPage = () => {
                 <div className="-mt-6">
                   <div>
                     <span className="inline-flex items-center justify-center p-3 bg-[#2E7915] rounded-md shadow-lg">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                      </svg>
+                      <PiChalkboardTeacherFill size={24} className="text-white" aria-hidden="true" />
                     </span>
                   </div>
                   <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">Teacher & Student</h3>
@@ -144,9 +143,7 @@ const LandingPage = () => {
                 <div className="-mt-6">
                   <div>
                     <span className="inline-flex items-center justify-center p-3 bg-[#2E7915] rounded-md shadow-lg">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
+                      <FaCheck size={24} className="text-white" aria-hidden="true" />
                     </span>
                   </div>
                   <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">Easy to Use</h3>
