@@ -1,4 +1,5 @@
-import { useState } from 'react'
+// LandingPage component
+import { useState, useEffect } from 'react'
 import AuthModal from './AuthModal'
 import { IoStatsChart } from 'react-icons/io5'
 import { PiChalkboardTeacherFill } from 'react-icons/pi'
@@ -16,6 +17,22 @@ const LandingPage = () => {
   const handleToggleMode = () => {
     setAuthMode(authMode === 'login' ? 'signup' : 'login')
   }
+
+  // Rotating word + fade effect
+  const words = ['faster', 'better', 'easier']
+  const [wordIndex, setWordIndex] = useState(0)
+  const [fading, setFading] = useState(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFading(true)
+      setTimeout(() => {
+        setWordIndex((i) => (i + 1) % words.length)
+        setFading(false)
+      }, 200) // fade out duration
+    }, 2500) // cycle frequency
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -56,7 +73,7 @@ const LandingPage = () => {
                   </button>
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="bg-[#2E7915] hover:bg-[#1e7a9e] text-white px-6 py-2 rounded-full font-medium transition-colors"
+                    className="bg-[#2E7915] hover:bg-black text-white px-6 py-2 rounded-full font-medium transition-colors"
                   >
                     Sign Up
                   </button>
@@ -75,7 +92,13 @@ const LandingPage = () => {
               <span className="text-[#2E7915]">Track</span>
               <span> your exercise 🏃🏽‍♂️</span>
             </span>
-            <span className="underline decoration-[#2E7915]"> easier</span>
+            <span
+              className={`underline decoration-[#2E7915] hover:text-[#2E7915] inline-block transition-all duration-200 ${
+                fading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'
+              }`}
+            >
+              {words[wordIndex]}
+            </span>
             <span> than ever</span>
           </h1>
           
@@ -87,7 +110,7 @@ const LandingPage = () => {
             <div className="rounded-md shadow">
               <button
                 onClick={() => handleAuthClick('signup')}
-                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#2E7915] hover:bg-[#1e7a9e] transition-colors md:py-4 md:text-lg md:px-10"
+                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#2E7915] hover:bg-black transition-colors md:py-4 md:text-lg md:px-10"
               >
                 Get Started
               </button>
@@ -158,36 +181,7 @@ const LandingPage = () => {
 
         {/* About Section */}
         <section id="about" className="mt-24">
-          <div className="bg-white border-2 border-gray-800 rounded-2xl shadow-sm">
-            <div className="px-8 py-10 md:px-12">
-              <h2 className="text-3xl font-bold text-gray-900">About STEP</h2>
-              <p className="mt-4 text-gray-600 max-w-3xl">
-                STEP helps teachers and students collaborate on fitness goals. Teachers can manage groups and
-                monitor activity, while students easily log workouts and see their progress over time.
-              </p>
-
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Track & Analyze</h3>
-                  <p className="mt-2 text-gray-600">
-                    Log training sessions and review monthly summaries to understand your progress.
-                  </p>
-                </div>
-                <div className="p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Teacher Tools</h3>
-                  <p className="mt-2 text-gray-600">
-                    Organize groups, view student activity, and guide exercise plans efficiently.
-                  </p>
-                </div>
-                <div className="p-5 rounded-lg border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Simple & Fast</h3>
-                  <p className="mt-2 text-gray-600">
-                    Clean UI, quick actions, and a smooth experience on any device.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          
         </section>
       </main>
 
