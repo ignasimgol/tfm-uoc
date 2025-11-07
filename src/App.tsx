@@ -8,6 +8,8 @@ import Dashboard from './components/Dashboard'
 import SchoolLinking from './components/SchoolLinking'
 import Track from './components/Track'
 import GroupsManager from './components/GroupsManager'
+import Summary from './components/Summary'
+import Rewards from './components/Rewards'
 import './index.css'
 
 function App() {
@@ -112,6 +114,14 @@ function App() {
           <Route 
             path="/groups" 
             element={<GroupsManager user={user} />} 
+          />
+          <Route 
+            path="/summary" 
+            element={<Summary user={user} />} 
+          />
+          <Route 
+            path="/rewards" 
+            element={<Rewards user={user} />} 
           />
         </Routes>
       </div>

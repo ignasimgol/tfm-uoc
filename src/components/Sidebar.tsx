@@ -9,19 +9,21 @@ interface SidebarProps {
   onOpenChange?: (open: boolean) => void
 }
 
-const Sidebar = ({ role, onOpenChange }: SidebarProps) => {
+function Sidebar({ role, onOpenChange }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true)
   const navigate = useNavigate()
 
   const teacherItems = [
     { label: 'Profile', to: '/profile', icon: ProfileIcon },
     { label: 'Groups', to: '/groups', icon: GroupsIcon },
+    { label: 'Summary', to: '/summary', icon: StatsIcon },
   ]
 
   const studentItems = [
     { label: 'Profile', to: '/profile', icon: ProfileIcon },
     { label: 'Track', to: '/track', icon: PencilIcon },
-    { label: 'Summary', to: '/summary', icon: RewardsIcon },
+
+    { label: 'Rewards', to: '/rewards', icon: RewardsIcon },
   ]
 
   const navItems = role === 'teacher' ? teacherItems : studentItems
@@ -177,6 +179,14 @@ function RewardsIcon() {
         fill="currentColor"
         d="M12 2l2.39 4.84L20 7.27l-3.64 3.54L17.27 16L12 13.77L6.73 16l.91-5.19L4 7.27l5.61-.43L12 2z"
       />
+    </svg>
+  )
+}
+
+function StatsIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" className="text-gray-700">
+      <path fill="currentColor" d="M3 13h4v8H3v-8zm7-6h4v14h-4V7zm7 3h4v11h-4V10z" />
     </svg>
   )
 }

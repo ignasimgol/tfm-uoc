@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import type { UserRole } from '../lib/supabase'
 
@@ -18,6 +18,51 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  // Student school/group linking
+  const [schoolInviteCode, setSchoolInviteCode] = useState('')
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null)
+  const [availableGroups, setAvailableGroups] = useState<{ id: string; name: string }[]>([])
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
+
+  // Resolve school by invite code and load groups for selection (student signup)
+  useEffect(() => {
+    const resolveSchool = async () => {
+      if (mode !== 'signup' || role !== 'student') return
+      if (!schoolInviteCode || schoolInviteCode.trim().length < 3) {
+        setSelectedSchoolId(null)
+        setAvailableGroups([])
+        setSelectedGroupId(null)
+        return
+      }
+
+      const { data: schools, error } = await supabase
+        .from('schools')
+        .select('id,invite_code')
+        .eq('invite_code', schoolInviteCode.trim())
+        .limit(1)
+
+      if (!error && schools && schools.length > 0) {
+        const schoolId = schools[0].id
+        setSelectedSchoolId(schoolId)
+
+        const { data: groups, error: gErr } = await supabase
+          .from('groups')
+          .select('id,name')
+          .eq('school_id', schoolId)
+          .order('created_at', { ascending: false })
+
+        setAvailableGroups(gErr || !groups ? [] : groups)
+        setSelectedGroupId(groups && groups.length > 0 ? groups[0].id : null)
+      } else {
+        setSelectedSchoolId(null)
+        setAvailableGroups([])
+        setSelectedGroupId(null)
+      }
+    }
+
+    resolveSchool()
+  }, [mode, role, schoolInviteCode])
 
   const validateForm = () => {
     if (!email || !password) {
@@ -53,27 +98,18 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
     setError('')
 
     if (!validateForm()) return
-
     setLoading(true)
 
     try {
       if (mode === 'signup') {
-        // First, sign up the user
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            data: {
-              role: role,
-              name: name
-            }
-          }
+          options: { data: { role: role, name: name } },
         })
-
         if (error) throw error
 
         if (data.user) {
-          // Create user profile with school_id set to NULL
           const { error: profileError } = await supabase
             .from('users')
             .insert([
@@ -82,31 +118,22 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                 email: data.user.email,
                 name: name,
                 role: role,
-                school_id: null // Set to NULL by default
-              }
+                school_id: null,
+              },
             ])
-
           if (profileError) {
             console.error('Profile creation error:', profileError)
-            // Don't throw here as the user was created successfully
           }
 
-          // Show success message for email confirmation if needed
           if (!data.session) {
             setError('Por favor, revisa tu email para confirmar tu cuenta antes de iniciar sesión.')
             return
           }
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
-
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
       }
-
-      onClose()
     } catch (error: any) {
       if (error.message.includes('Invalid login credentials')) {
         setError('Email o contraseña incorrectos. Por favor, inténtalo de nuevo.')
@@ -123,18 +150,11 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
   }
 
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose()
-    }
+    if (e.target === e.currentTarget) onClose()
   }
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
-
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword)
-  }
+  const togglePasswordVisibility = () => setShowPassword(!showPassword)
+  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword)
 
   return (
     <div 
@@ -279,7 +299,6 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                     <option value="student">Estudiante</option>
                     <option value="teacher">Profesor/a</option>
                   </select>
-                  {/* Custom dropdown arrow */}
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

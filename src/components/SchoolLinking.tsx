@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import type { School } from '../lib/supabase'
+import type { UserRole } from '../lib/supabase'
 
 interface SchoolLinkingProps {
   user: User
   onComplete: () => void
 }
 
-const SchoolLinking = ({ user, onComplete }: SchoolLinkingProps) => {
+function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
   const [mode, setMode] = useState<'select' | 'join' | 'create'>('select')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -17,11 +18,14 @@ const SchoolLinking = ({ user, onComplete }: SchoolLinkingProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [schools, setSchools] = useState<School[]>([])
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null)
-  
   // Create new school states
   const [schoolName, setSchoolName] = useState('')
   const [location, setLocation] = useState('')
 
+  // NUEVOS ESTADOS NECESARIOS
+  const [userRole, setUserRole] = useState<UserRole | null>(null)
+  const [groups, setGroups] = useState<{ id: string; name: string }[]>([])
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
   useEffect(() => {
     if (mode === 'join' && searchTerm.length > 2) {
       searchSchools()
@@ -43,9 +47,48 @@ const SchoolLinking = ({ user, onComplete }: SchoolLinkingProps) => {
     }
   }
 
+  useEffect(() => {
+    // Cargar el rol del usuario (para forzar grupo solo a estudiantes)
+    const loadRole = async () => {
+      const { data, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      if (!error && data) setUserRole(data.role as UserRole)
+    }
+    loadRole()
+  }, [user.id])
+
+  useEffect(() => {
+    // Cuando se selecciona una escuela, cargar sus grupos
+    if (!selectedSchool) {
+      setGroups([])
+      setSelectedGroupId(null)
+      return
+    }
+    const loadGroups = async () => {
+      const { data, error } = await supabase
+        .from('groups')
+        .select('id,name')
+        .eq('school_id', selectedSchool.id)
+        .order('created_at', { ascending: false })
+      if (!error && data) {
+        setGroups(data as { id: string; name: string }[])
+        setSelectedGroupId((data as { id: string; name: string }[])[0]?.id ?? null)
+      }
+    }
+    loadGroups()
+  }, [selectedSchool])
+
   const handleJoinSchool = async () => {
     if (!selectedSchool) {
       setError('Por favor, selecciona una escuela')
+      return
+    }
+    // Si es estudiante, exigir grupo
+    if (userRole === 'student' && !selectedGroupId) {
+      setError('Por favor, selecciona un grupo para unirte')
       return
     }
 
@@ -57,8 +100,16 @@ const SchoolLinking = ({ user, onComplete }: SchoolLinkingProps) => {
         .from('users')
         .update({ school_id: selectedSchool.id })
         .eq('id', user.id)
-
       if (error) throw error
+
+      // Insertar la membresía si es estudiante y hay grupo
+      if (userRole === 'student' && selectedGroupId) {
+        const { error: gmError } = await supabase
+          .from('group_members')
+          .insert([{ group_id: selectedGroupId, student_id: user.id }])
+        if (gmError) throw gmError
+      }
+
       onComplete()
     } catch (error: any) {
       setError('Error al unirse a la escuela: ' + error.message)
@@ -197,24 +248,33 @@ const SchoolLinking = ({ user, onComplete }: SchoolLinkingProps) => {
 
             {schools.length > 0 && (
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Escuelas encontradas:
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Escuelas encontradas:</label>
                 <div className="max-h-40 overflow-y-auto space-y-2">
                   {schools.map((school) => (
+                    // Dentro del listado de escuelas encontradas, sustituye el onClick del botón de selección:
                     <button
                       key={school.id}
-                      onClick={() => setSelectedSchool(school)}
+                      onClick={async () => {
+                        // Primero vincula el perfil a la escuela (solo estudiantes)
+                        if (userRole === 'student') {
+                          const { error } = await supabase
+                            .from('users')
+                            .update({ school_id: school.id })
+                            .eq('id', user.id)
+                          if (error) {
+                            setError('No se pudo vincular la escuela: ' + error.message)
+                            return
+                          }
+                        }
+                        // Luego establece la selección y carga de grupos funcionará bajo la policy
+                        setSelectedSchool(school)
+                      }}
                       className={`w-full p-3 text-left border rounded-md transition-colors ${
-                        selectedSchool?.id === school.id
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                        selectedSchool?.id === school.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
                       <div className="font-medium text-gray-900">{school.name}</div>
-                      {school.location && (
-                        <div className="text-sm text-gray-500">{school.location}</div>
-                      )}
+                      {school.location && <div className="text-sm text-gray-500">{school.location}</div>}
                       <div className="text-xs text-gray-400">Código: {school.invite_code}</div>
                     </button>
                   ))}
@@ -222,10 +282,41 @@ const SchoolLinking = ({ user, onComplete }: SchoolLinkingProps) => {
               </div>
             )}
 
+            {/* Selector de grupo cuando hay escuela seleccionada */}
+            {selectedSchool && (
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Grupos disponibles:
+                </label>
+                <div className="max-h-40 overflow-y-auto space-y-2">
+                  {groups.length === 0 ? (
+                    <div className="text-sm text-gray-500">Esta escuela no tiene grupos aún.</div>
+                  ) : (
+                    groups.map((g) => (
+                      <button
+                        key={g.id}
+                        onClick={() => setSelectedGroupId(g.id)}
+                        className={`w-full p-3 text-left border rounded-md transition-colors ${
+                          selectedGroupId === g.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="font-medium text-gray-900">{g.name}</div>
+                      </button>
+                    ))
+                  )}
+                </div>
+                {userRole === 'student' && (
+                  <p className="text-xs text-gray-500">
+                    Selecciona un grupo para que tu profesor pueda ver tu progreso.
+                  </p>
+                )}
+              </div>
+            )}
+
             {selectedSchool && (
               <button
                 onClick={handleJoinSchool}
-                disabled={loading}
+                disabled={loading || (userRole === 'student' && !selectedGroupId)}
                 className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Uniéndose...' : `Unirse a ${selectedSchool.name}`}
