@@ -101,6 +101,11 @@ export async function fetchGroupTotals(groupId: string): Promise<{
   return { students, statsByStudent }
 }
 
+// Fallback público: obtener alumnos por un conjunto de IDs
+export async function fetchStudentsByIds(ids: string[]): Promise<Student[]> {
+  return getUsersByIds(ids)
+}
+
 export function useGroupTotals(groupId: string | null) {
   const [students, setStudents] = useState<Student[]>([])
   const [statsByStudent, setStatsByStudent] = useState<StatsByStudent>({})

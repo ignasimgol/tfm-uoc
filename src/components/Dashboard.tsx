@@ -86,6 +86,74 @@ function Dashboard({ user }: DashboardProps) {
   // Estado para el despliegue de la Danger Zone
   const [dangerOpen, setDangerOpen] = useState(false)
 
+  // Aggregates for teachers
+  const [totalStudents, setTotalStudents] = useState<number>(0)
+  const [totalGroups, setTotalGroups] = useState<number>(0)
+  const [schoolName, setSchoolName] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchProfile()
+  }, [user])
+
+  useEffect(() => {
+    const loadTeacherAggregates = async () => {
+      if (profile?.role !== 'teacher') return
+
+      // Groups owned by the teacher
+      const { data: groupsRows, error: groupsError } = await supabase
+        .from('groups')
+        .select('id')
+        .eq('teacher_id', user.id)
+
+      if (groupsError) {
+        console.error('Error loading groups:', groupsError)
+        setTotalGroups(0)
+        setTotalStudents(0)
+      } else {
+        const groupIds = (groupsRows ?? []).map((g) => g.id)
+        setTotalGroups(groupIds.length)
+
+        // Distinct students across those groups
+        if (groupIds.length > 0) {
+          const { data: membersRows, error: membersError } = await supabase
+            .from('group_members')
+            .select('student_id')
+            .in('group_id', groupIds)
+
+          if (membersError) {
+            console.error('Error loading group members:', membersError)
+            setTotalStudents(0)
+          } else {
+            const uniq = new Set((membersRows ?? []).map((m) => m.student_id))
+            setTotalStudents(uniq.size)
+          }
+        } else {
+          setTotalStudents(0)
+        }
+      }
+
+      // School name
+      if (profile?.school_id) {
+        const { data: schoolRow, error: schoolError } = await supabase
+          .from('schools')
+          .select('name')
+          .eq('id', profile.school_id)
+          .single()
+
+        if (schoolError) {
+          console.error('Error loading school:', schoolError)
+          setSchoolName(null)
+        } else {
+          setSchoolName(schoolRow?.name ?? null)
+        }
+      } else {
+        setSchoolName(null)
+      }
+    }
+
+    loadTeacherAggregates()
+  }, [user.id, profile?.role, profile?.school_id])
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -140,23 +208,23 @@ function Dashboard({ user }: DashboardProps) {
                 {profile?.role === 'teacher' ? (
                   <div className="space-y-4">
                     <p className="text-lg text-gray-600">
-                      As a teacher, you can manage your students' exercise progress and create workout plans.
+                      Overview of your school and groups.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                       <div className="bg-white p-6 rounded-lg shadow">
                         <h3 className="text-lg font-medium text-gray-900 mb-2">Students</h3>
-                        <p className="text-3xl font-bold text-blue-600">0</p>
-                        <p className="text-sm text-gray-500">Total students</p>
+                        <p className="text-3xl font-bold text-blue-600">{totalStudents}</p>
+                      
                       </div>
                       <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Workouts</h3>
-                        <p className="text-3xl font-bold text-green-600">0</p>
-                        <p className="text-sm text-gray-500">Created workouts</p>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Groups</h3>
+                        <p className="text-3xl font-bold text-green-600">{totalGroups}</p>
+                        
                       </div>
                       <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Progress</h3>
-                        <p className="text-3xl font-bold text-purple-600">0%</p>
-                        <p className="text-sm text-gray-500">Average completion</p>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">School</h3>
+                        <p className="text-xl font-semibold text-purple-600">{schoolName ?? 'No school linked'}</p>
+                        
                       </div>
                     </div>
                   </div>
@@ -166,7 +234,7 @@ function Dashboard({ user }: DashboardProps) {
                       As a student, you can track your exercise progress and view assignments from your teachers.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                      
+                      {/* Student-specific content */}
                     </div>
                   </div>
                 )}

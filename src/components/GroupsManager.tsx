@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { supabase, type Group } from '../lib/supabase'
 import Sidebar from './Sidebar'
-import { useGroupTotals } from './DataDealer'
+import { useGroupTotals, fetchStudentsByIds } from './DataDealer'
+import TotalStatsGroup from './TotalStatsGroup'
 
 interface GroupsManagerProps {
   user: User
@@ -145,17 +146,55 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
     refresh,
   } = useGroupTotals(selectedGroupId)
 
+  const [fallbackStudents, setFallbackStudents] = useState<Student[]>([])
+
   useEffect(() => {
-    console.log('[GroupsManager]', {
-      selectedGroupId,
-      groupsCount: groups.length,
-      localLoading: loading,
-      totalsLoading,
-      totalsStudentsCount: totalsStudents.length,
-      statsKeys: Object.keys(statsByStudent).length,
-      totalsError,
-    })
-  }, [selectedGroupId, groups, loading, totalsLoading, totalsStudents, statsByStudent, totalsError])
+    // Si no hay alumnos pero sí stats, intentamos cargar por los IDs que falten
+    const loadMissingProfiles = async () => {
+      if (!selectedGroupId) {
+        setFallbackStudents([])
+        return
+      }
+
+      const statsIds = Object.keys(statsByStudent)
+      if (statsIds.length === 0) {
+        setFallbackStudents([])
+        return
+      }
+
+      const knownIds = new Set<string>([
+        ...totalsStudents.map((s) => s.id),
+        ...students.map((s) => s.id),
+        ...fallbackStudents.map((s) => s.id),
+      ])
+
+      const missingIds = statsIds.filter((id) => !knownIds.has(id))
+      if (missingIds.length === 0) return
+
+      try {
+        const rows = await fetchStudentsByIds(missingIds)
+        setFallbackStudents((prev) => {
+          const merged = [...prev]
+          for (const s of rows ?? []) {
+            if (!merged.find((m) => m.id === s.id)) {
+              merged.push({ id: s.id, name: s.name ?? '', email: s.email })
+            }
+          }
+          return merged
+        })
+      } catch (e) {
+        console.error('Error loading missing student profiles', e)
+      }
+    }
+
+    loadMissingProfiles()
+  }, [selectedGroupId, statsByStudent, totalsStudents, students, fallbackStudents])
+
+  // Diccionario de perfiles por ID, combinando todas las fuentes disponibles
+  const studentById: Record<string, { name: string | null; email: string } | undefined> = {}
+  ;[...students, ...totalsStudents, ...fallbackStudents].forEach((s) => {
+    studentById[s.id] = { name: s.name, email: s.email }
+  })
 
   return (
     <>
@@ -183,25 +222,10 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                     ))
                   )}
                 </select>
-                <div className="flex gap-2">
-                  {groups.map((g) => (
-                    <button
-                      key={g.id}
-                      onClick={() => setSelectedGroupId(g.id)}
-                      className={`px-3 py-2 rounded-md border ${selectedGroupId === g.id ? 'bg-blue-600 text-white' : 'bg-white hover:bg-gray-50'}`}
-                      aria-pressed={selectedGroupId === g.id}
-                    >
-                      {g.name}
-                    </button>
-                  ))}
-                </div>
+                
               </div>
             </div>
-            <div className="mt-2 text-sm text-black">
-              {selectedGroupId
-                ? `Viendo: ${groups.find((g) => g.id === selectedGroupId)?.name ?? selectedGroupId}`
-                : 'Selecciona un grupo para ver sus alumnos y sesiones'}
-            </div>
+          
           </div>
         </header>
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -209,11 +233,8 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
             <div className="border-4 border-dashed border-gray-200 rounded-lg p-6 bg-white">
               {(loading || totalsLoading) && <div className="text-black">Loading…</div>}
               {totalsError && <div className="text-red-600">Error: {totalsError}</div>}
-              <div className="text-xs text-gray-500">
-                Grupo: {selectedGroupId ?? 'none'} | Grupos: {groups.length} | Alumnos: {totalsStudents.length} | Stats: {Object.keys(statsByStudent).length}
-              </div>
-
-              {/* Tabla: preferimos alumnos; si no hay, renderizamos por IDs de stats */}
+              {/* Insert group totals component */}
+              <TotalStatsGroup groupId={selectedGroupId} />
               {!(loading || totalsLoading) && Object.keys(statsByStudent).length > 0 && (
                 <div className="space-y-6">
                   <h2 className="text-lg font-semibold text-gray-900">Students totals</h2>
@@ -228,15 +249,12 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {(totalsStudents.length > 0
-                          ? totalsStudents.map((st) => st.id)
-                          : Object.keys(statsByStudent)
-                        ).map((id) => {
-                          const st = totalsStudents.find((s) => s.id === id)
+                        {Object.keys(statsByStudent).map((id) => {
                           const stats = statsByStudent[id] || { totalMinutes: 0, avgEnjoyment: 0, sessions: 0 }
+                          const profile = studentById[id]
                           return (
                             <tr key={id}>
-                              <td className="px-3 py-2 text-black">{st ? (st.name || st.email) : id}</td>
+                              <td className="px-3 py-2 text-black">{profile ? (profile.name || profile.email) : 'Student not found'}</td>
                               <td className="px-3 py-2 text-black">{stats.sessions}</td>
                               <td className="px-3 py-2 text-black">{stats.totalMinutes}</td>
                               <td className="px-3 py-2 text-black">{stats.avgEnjoyment}</td>
@@ -250,7 +268,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
               )}
 
               {!(loading || totalsLoading) &&
-                totalsStudents.length === 0 &&
+                (totalsStudents.length === 0 && students.length === 0 && fallbackStudents.length === 0) &&
                 Object.keys(statsByStudent).length === 0 && (
                   <div className="text-black">No hay alumnos para este grupo.</div>
               )}
