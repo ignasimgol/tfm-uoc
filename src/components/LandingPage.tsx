@@ -194,6 +194,100 @@ const LandingPage = () => {
           </div>
         </div>
 
+        {/* How it works */}
+        <section id="how-it-works" className="mt-24">
+          <div className="space-y-16">
+            {/* Row 1: Track activities (image left, text right) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+              <div className="rounded-2xl border bg-white shadow-sm p-4">
+                <div className="aspect-video rounded-xl bg-gray-100 border flex items-center justify-center text-gray-400">
+                  {/* Replace with a real screenshot */}
+                  <span className="text-sm">Screenshot: Add activity</span>
+                </div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-green-600 tracking-widest mb-2">TRACKING</div>
+                <h3 className="text-3xl font-bold text-gray-900 leading-tight">
+                  Log your activities effortlessly
+                </h3>
+                <p className="mt-3 text-gray-600">
+                  Record duration, intensity and type in seconds. Your data is saved to your group so
+                  teachers can see progress immediately.
+                </p>
+                <div className="mt-5 flex gap-3">
+                  <button
+                    onClick={() => handleAuthClick('signup')}
+                    className="inline-flex items-center rounded-full bg-[#2E7915] px-4 py-2 text-white hover:bg-black transition-colors"
+                  >
+                    Start tracking
+                  </button>
+                
+                </div>
+              </div>
+            </div>
+        
+            {/* Row 2: Manage groups (text left, image right) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+              <div className="md:order-first">
+                <div className="text-xs font-semibold text-green-600 tracking-widest mb-2">GROUPS</div>
+                <h3 className="text-3xl font-bold text-gray-900 leading-tight">
+                  Manage classes with ease
+                </h3>
+                <p className="mt-3 text-gray-600">
+                  Teachers create groups, invite students and get instant visibility. All members’
+                  activity is centralized for quick reviews and feedback.
+                </p>
+                <div className="mt-5 flex gap-3">
+                  <button
+                    onClick={() => handleAuthClick('signup')}
+                    className="inline-flex items-center rounded-full bg-[#2E7915] px-4 py-2 text-white hover:bg-black transition-colors"
+                  >
+                    Get started
+                  </button>
+                
+                </div>
+              </div>
+              <div className="md:order-last">
+                <div className="rounded-2xl border bg-white shadow-sm p-4">
+                  <div className="aspect-video rounded-xl bg-gray-100 border flex items-center justify-center text-gray-400">
+                    {/* Replace with a real screenshot */}
+                    <span className="text-sm">Screenshot: Groups & members</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+        
+            {/* Row 3: See results (image left, text right) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+              <div className="rounded-2xl border bg-white shadow-sm p-4">
+                <div className="aspect-video rounded-xl bg-gray-100 border flex items-center justify-center text-gray-400">
+                  {/* Replace with a real screenshot */}
+                  <span className="text-sm">Screenshot: Totals & top activities</span>
+                </div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-green-600 tracking-widest mb-2">SUMMARY</div>
+                <h3 className="text-3xl font-bold text-gray-900 leading-tight">
+                  Turn data into insights
+                </h3>
+                <p className="mt-3 text-gray-600">
+                  See per-student totals, group averages and top activities. Simple visuals help
+                  identify trends and keep everyone motivated.
+                </p>
+                <div className="mt-5 flex gap-3">
+                  <button
+                    onClick={() => handleAuthClick('signup')}
+                    className="inline-flex items-center rounded-full bg-[#2E7915] px-4 py-2 text-white hover:bg-black transition-colors"
+                  >
+                    Try it now
+                  </button>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* About Section */}
         <section id="about" className="mt-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
