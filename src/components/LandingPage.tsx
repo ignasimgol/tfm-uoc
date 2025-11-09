@@ -4,6 +4,7 @@ import AuthModal from './AuthModal'
 import { IoStatsChart } from 'react-icons/io5'
 import { PiChalkboardTeacherFill } from 'react-icons/pi'
 import { FaCheck } from 'react-icons/fa'
+import { FaEnvelope, FaLinkedin, FaTwitter } from 'react-icons/fa'
 
 const LandingPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -22,6 +23,20 @@ const LandingPage = () => {
   const words = ['faster', 'better', 'easier']
   const [wordIndex, setWordIndex] = useState(0)
   const [fading, setFading] = useState(false)
+
+  // Notification for email copy
+  const [copiedToast, setCopiedToast] = useState(false)
+  const copyEmailToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText('ignasimgol@gmail.com')
+      setCopiedToast(true)
+      setTimeout(() => setCopiedToast(false), 1600)
+    } catch {
+      // fallback: show toast even if clipboard fails
+      setCopiedToast(true)
+      setTimeout(() => setCopiedToast(false), 1600)
+    }
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -181,7 +196,70 @@ const LandingPage = () => {
 
         {/* About Section */}
         <section id="about" className="mt-24">
-          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="text-left">
+              <h2 className="text-3xl font-semibold text-gray-900">About</h2>
+              <p className="mt-4 text-gray-700">
+                I’m a teacher with a passion for creating apps. Combining education and technology inspires me to design tools that are both practical and easy to use. Over the years, I’ve seen how the right digital resources can make learning more dynamic, motivating, and accessible for students.
+              </p>
+              <p className="mt-3 text-gray-700">
+                With more than a decade of experience in education and sports coaching, I’ve always been driven by the idea of helping others grow, not only by improving their performance but also by fostering curiosity and a love for learning. That same motivation led me to explore the world of front-end development, where I can bring ideas to life through interactive and user-friendly designs.
+              </p>
+              <p className="mt-3 text-gray-700">
+                I decided to develop this project as part of my Master’s Final Project at the UOC. Its goal is to help teachers and students track their physical progress in a clear, simple, and engaging way, turning data into meaningful insights and supporting a more active, reflective, and enjoyable learning experience.
+              </p>
+            </div>
+
+            <div className="w-full">
+              <img
+                src="/about.jpeg"
+                alt="Foto de Ignasi"
+                className="w-[250px] max-w-sm rounded-lg shadow-md border mx-auto"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="mt-24">
+          <div className="text-center">
+            <h2 className="text-3xl font-semibold text-gray-900">Contact us</h2>
+            <div className="mt-8 flex justify-center gap-4">
+              <button
+                onClick={copyEmailToClipboard}
+                aria-label="Copiar email"
+                className="p-4 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                <FaEnvelope className="text-green-500" size={40} />
+              </button>
+              <a
+                href="https://www.linkedin.com/in/ignasi-mu%C3%B1oz-gol-81557515b/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="p-4 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                <FaLinkedin className="text-green-500" size={40} />
+              </a>
+              <a
+                href="https://twitter.com/ignasimgol"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+                className="p-4 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                <FaTwitter className="text-green-500" size={40} />
+              </a>
+            </div>
+          </div>
+
+          {copiedToast && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+              <div className="bg-black/80 text-white px-4 py-2 rounded-md shadow-lg">
+                Email copiado al portapapeles
+              </div>
+            </div>
+          )}
         </section>
       </main>
 
@@ -198,16 +276,12 @@ const LandingPage = () => {
               <a href="#contact" className="text-gray-600 hover:text-[#2E7915]">Contact</a>
             </nav>
           </div>
-          <div id="contact" className="pb-8 text-sm text-gray-600">
-            <p>
-              Contact us: <a href="mailto:ignasimgol@gmail.com" className="underline hover:text-[#2E7915]">ignasimgol@gmail.com</a>
-            </p>
+          <div className="pb-8 text-sm text-gray-600">
             <p className="mt-2">© {new Date().getFullYear()} STEP. All rights reserved.</p>
           </div>
         </div>
       </footer>
 
-      {/* Auth Modal (fixes unused warnings) */}
       {showAuthModal && (
         <AuthModal
           mode={authMode}
