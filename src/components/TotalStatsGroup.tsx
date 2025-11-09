@@ -60,8 +60,6 @@ export default function TotalStatsGroup({ groupId }: { groupId: string | null })
   return (
     <div className="rounded-md border bg-white p-4 mb-6">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold text-gray-900">Group totals</h2>
-        {groupId && <div className="text-xs text-gray-500">Group: {groupId}</div>}
       </div>
       {loading && <div className="text-black">Loading…</div>}
       {error && <div className="text-red-600">Error: {error}</div>}
