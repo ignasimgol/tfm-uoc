@@ -15,41 +15,12 @@ interface Student {
   email: string
 }
 
-interface SessionRow {
-  id: string
-  student_id: string
-  date: string
-  activity_type: string
-  duration: number
-  intensity: number
-  notes: string | null
-}
-
 export default function GroupsManager({ user }: GroupsManagerProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [groups, setGroups] = useState<Group[]>([])
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
   const [students, setStudents] = useState<Student[]>([])
-  const [sessions, setSessions] = useState<SessionRow[]>([])
   const [loading, setLoading] = useState(false)
-  const [teacherSchoolId, setTeacherSchoolId] = useState<string | null>(null)
-  const [newGroupName, setNewGroupName] = useState('')
-  const [creatingGroup, setCreatingGroup] = useState(false)
-
-  useEffect(() => {
-    // Load teacher profile to obtain school_id (needed for group creation)
-    const loadTeacherProfile = async () => {
-      const { data, error } = await supabase
-        .from('users')
-        .select('school_id')
-        .eq('id', user.id)
-        .single()
-      if (!error && data) {
-        setTeacherSchoolId(data.school_id ?? null)
-      }
-    }
-    loadTeacherProfile()
-  }, [user.id])
 
   useEffect(() => {
     const loadGroups = async () => {
@@ -73,77 +44,38 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
 
   useEffect(() => {
     if (!selectedGroupId) return
-    const loadMembersAndSessions = async () => {
+    const loadMembers = async () => {
       setLoading(true)
-
-      // miembros del grupo
       const { data: memberRows, error: membersError } = await supabase
         .from('group_members')
         .select('student_id')
         .eq('group_id', selectedGroupId)
-
       if (membersError) {
         console.error('Error loading members:', membersError)
         setLoading(false)
         return
       }
-
       const studentIds = (memberRows ?? []).map((m) => m.student_id)
       const { data: studentRows, error: studentsError } = await supabase
         .from('users')
         .select('id,name,email')
         .in('id', studentIds)
-
       if (studentsError) {
         console.error('Error loading students:', studentsError)
         setLoading(false)
         return
       }
-
       setStudents(studentRows ?? [])
-
-      // sesiones recientes del grupo (últimos 60 días)
-      const { data: sessionRows, error: sessionsError } = await supabase
-        .from('training_sessions')
-        .select('id,student_id,date,activity_type,duration,intensity,notes')
-        .eq('group_id', selectedGroupId)
-        .order('date', { ascending: false })
-
-      if (sessionsError) {
-        console.error('Error loading sessions:', sessionsError)
-        setLoading(false)
-        return
-      }
-
-      setSessions(sessionRows ?? [])
       setLoading(false)
     }
-    loadMembersAndSessions()
+    loadMembers()
   }, [selectedGroupId])
-
-  const latestByStudent: Record<string, SessionRow | undefined> = {}
-  for (const s of sessions) {
-    if (!latestByStudent[s.student_id]) latestByStudent[s.student_id] = s
-  }
-
-  // Compute weekly averages and enjoyment per student
-  const getWeekKey = (dateStr: string) => {
-    const d = new Date(dateStr)
-    const tmp = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
-    const dayNum = tmp.getUTCDay() || 7
-    tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum)
-    const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1))
-    const weekNo = Math.ceil((((tmp.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
-    return `${tmp.getUTCFullYear()}-${String(weekNo).padStart(2, '0')}`
-  }
 
   const {
     students: totalsStudents,
     statsByStudent,
     loading: totalsLoading,
     error: totalsError,
-    hasData,
-    refresh,
     topActivities,
   } = useGroupTotals(selectedGroupId)
 
