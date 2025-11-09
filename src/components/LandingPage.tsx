@@ -67,13 +67,13 @@ const LandingPage = () => {
                 </div>
                 {/* Navigation Links */}
                 <div className="hidden md:flex items-center space-x-8">
-                  <a href="#home" className="text-gray-800 hover:text-[#2E7915] hover:underline font-medium transition-colors">
+                  <a href="#home" className="text-gray-800 hover:text-green-500 hover:underline font-medium transition-colors">
                     Home
                   </a>
-                  <a href="#about" className="text-gray-600 hover:text-[#2E7915] hover:underline font-medium transition-colors">
+                  <a href="#about" className="text-gray-600 hover:text-green-500 hover:underline font-medium transition-colors">
                     About
                   </a>
-                  <a href="#contact" className="text-gray-600 hover:text-[#2E7915] hover:underline font-medium transition-colors">
+                  <a href="#contact" className="text-gray-600 hover:text-green-500 hover:underline font-medium transition-colors">
                     Contact
                   </a>
                 </div>
@@ -82,13 +82,13 @@ const LandingPage = () => {
                 <div className="flex items-center space-x-4">
                   <button
                     onClick={() => handleAuthClick('login')}
-                    className="text-gray-600 hover:text-[#2E7915] hover:underline font-medium transition-colors"
+                    className="text-gray-600 hover:text-green-500 hover:underline font-medium transition-colors"
                   >
                     Login
                   </button>
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="bg-[#2E7915] hover:bg-black text-white px-6 py-2 rounded-full font-medium transition-colors"
+                    className="bg-green-700 hover:bg-black text-white px-6 py-2 rounded-full font-medium transition-colors"
                   >
                     Sign Up
                   </button>
@@ -104,11 +104,11 @@ const LandingPage = () => {
         <div className="text-center">
           <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
             <span className='block'>
-              <span className="text-[#2E7915]">Track</span>
+              <span className="text-green-700">Track</span>
               <span> your exercise 🏃🏽‍♂️</span>
             </span>
             <span
-              className={`underline decoration-[#2E7915] hover:text-[#2E7915] inline-block transition-all duration-200 ${
+              className={`underline decoration-green-700 hover:text-green-500 inline-block transition-all duration-200 ${
                 fading ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'
               }`}
             >
@@ -125,7 +125,7 @@ const LandingPage = () => {
             <div className="rounded-md shadow">
               <button
                 onClick={() => handleAuthClick('signup')}
-                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#2E7915] hover:bg-black transition-colors md:py-4 md:text-lg md:px-10"
+                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-green-700 hover:bg-black transition-colors md:py-4 md:text-lg md:px-10"
               >
                 Get Started
               </button>
@@ -133,7 +133,7 @@ const LandingPage = () => {
             <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
               <button
                 onClick={() => handleAuthClick('login')}
-                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-[#2E7915] bg-white hover:bg-gray-50 transition-colors md:py-4 md:text-lg md:px-10"
+                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-green-500 bg-white hover:bg-gray-50 transition-colors md:py-4 md:text-lg md:px-10"
               >
                 Login
               </button>
@@ -148,7 +148,7 @@ const LandingPage = () => {
               <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
                 <div className="-mt-6">
                   <div>
-                    <span className="inline-flex items-center justify-center p-3 bg-[#2E7915] rounded-md shadow-lg">
+                    <span className="inline-flex items-center justify-center p-3 bg-green-700 rounded-md shadow-lg">
                       <IoStatsChart size={24} className="text-white" aria-hidden="true" />
                     </span>
                   </div>
@@ -164,7 +164,7 @@ const LandingPage = () => {
               <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
                 <div className="-mt-6">
                   <div>
-                    <span className="inline-flex items-center justify-center p-3 bg-[#2E7915] rounded-md shadow-lg">
+                    <span className="inline-flex items-center justify-center p-3 bg-green-700 rounded-md shadow-lg">
                       <PiChalkboardTeacherFill size={24} className="text-white" aria-hidden="true" />
                     </span>
                   </div>
@@ -180,7 +180,7 @@ const LandingPage = () => {
               <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
                 <div className="-mt-6">
                   <div>
-                    <span className="inline-flex items-center justify-center p-3 bg-[#2E7915] rounded-md shadow-lg">
+                    <span className="inline-flex items-center justify-center p-3 bg-green-700 rounded-md shadow-lg">
                       <FaCheck size={24} className="text-white" aria-hidden="true" />
                     </span>
                   </div>
@@ -206,7 +206,7 @@ const LandingPage = () => {
                 </div>
               </div>
               <div>
-                <div className="text-xs font-semibold text-green-600 tracking-widest mb-2">TRACKING</div>
+                <div className="text-xs font-semibold text-green-700 tracking-widest mb-2">TRACKING</div>
                 <h3 className="text-3xl font-bold text-gray-900 leading-tight">
                   Log your activities effortlessly
                 </h3>
@@ -217,7 +217,7 @@ const LandingPage = () => {
                 <div className="mt-5 flex gap-3">
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="inline-flex items-center rounded-full bg-[#2E7915] px-4 py-2 text-white hover:bg-black transition-colors"
+                    className="inline-flex items-center rounded-full bg-green-700 px-4 py-2 text-white hover:bg-black transition-colors"
                   >
                     Start tracking
                   </button>
@@ -229,7 +229,7 @@ const LandingPage = () => {
             {/* Row 2: Manage groups (text left, image right) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               <div className="md:order-first">
-                <div className="text-xs font-semibold text-green-600 tracking-widest mb-2">GROUPS</div>
+                <div className="text-xs font-semibold text-green-700 tracking-widest mb-2">GROUPS</div>
                 <h3 className="text-3xl font-bold text-gray-900 leading-tight">
                   Manage classes with ease
                 </h3>
@@ -240,7 +240,7 @@ const LandingPage = () => {
                 <div className="mt-5 flex gap-3">
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="inline-flex items-center rounded-full bg-[#2E7915] px-4 py-2 text-white hover:bg-black transition-colors"
+                    className="inline-flex items-center rounded-full bg-green-700 px-4 py-2 text-white hover:bg-black transition-colors"
                   >
                     Get started
                   </button>
@@ -266,7 +266,7 @@ const LandingPage = () => {
                 </div>
               </div>
               <div>
-                <div className="text-xs font-semibold text-green-600 tracking-widest mb-2">SUMMARY</div>
+                <div className="text-xs font-semibold text-green-700 tracking-widest mb-2">SUMMARY</div>
                 <h3 className="text-3xl font-bold text-gray-900 leading-tight">
                   Turn data into insights
                 </h3>
@@ -277,7 +277,7 @@ const LandingPage = () => {
                 <div className="mt-5 flex gap-3">
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="inline-flex items-center rounded-full bg-[#2E7915] px-4 py-2 text-white hover:bg-black transition-colors"
+                    className="inline-flex items-center rounded-full bg-green-700 px-4 py-2 text-white hover:bg-black transition-colors"
                   >
                     Try it now
                   </button>
@@ -365,9 +365,9 @@ const LandingPage = () => {
               <img src="/step-black.png" alt="Step logo" className="h-8" />
             </div>
             <nav className="mt-4 md:mt-0 flex items-center space-x-6">
-              <a href="#home" className="text-gray-600 hover:text-[#2E7915]">Home</a>
-              <a href="#about" className="text-gray-600 hover:text-[#2E7915]">About</a>
-              <a href="#contact" className="text-gray-600 hover:text-[#2E7915]">Contact</a>
+              <a href="#home" className="text-gray-600 hover:text-green-500">Home</a>
+              <a href="#about" className="text-gray-600 hover:text-green-500">About</a>
+              <a href="#contact" className="text-gray-600 hover:text-green-500">Contact</a>
             </nav>
           </div>
           <div className="pb-8 text-sm text-gray-600">
