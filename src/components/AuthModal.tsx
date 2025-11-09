@@ -118,11 +118,32 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                 email: data.user.email,
                 name: name,
                 role: role,
-                school_id: null,
+                school_id: selectedSchoolId ?? null,
               },
             ])
           if (profileError) {
             console.error('Profile creation error:', profileError)
+          }
+
+          // If student, link to selected school and add to selected group
+          if (role === 'student') {
+            if (selectedSchoolId) {
+              await supabase
+                .from('users')
+                .update({ school_id: selectedSchoolId })
+                .eq('id', data.user.id)
+            }
+            if (selectedGroupId) {
+              await supabase
+                .from('group_members')
+                .insert([
+                  {
+                    group_id: selectedGroupId,
+                    student_id: data.user.id,
+                    joined_at: new Date().toISOString(),
+                  },
+                ])
+            }
           }
 
           if (!data.session) {
@@ -193,6 +214,55 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                   placeholder="Introduce tu nombre completo"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
                 />
+              </div>
+            )}
+
+            {/* School invite code (student signup) */}
+            {mode === 'signup' && role === 'student' && (
+              <div>
+                <label htmlFor="inviteCode" className="block text-sm font-medium text-gray-700 mb-1">
+                  Código de invitación de la escuela
+                </label>
+                <input
+                  type="text"
+                  id="inviteCode"
+                  value={schoolInviteCode}
+                  onChange={(e) => setSchoolInviteCode(e.target.value)}
+                  placeholder="Introduce el código proporcionado por tu escuela"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
+                />
+                <div className="mt-1 text-xs text-gray-500">
+                  {selectedSchoolId
+                    ? 'Escuela encontrada. Selecciona un grupo disponible.'
+                    : schoolInviteCode
+                      ? 'Buscando escuela...'
+                      : 'Introduce el código para vincular tu escuela'}
+                </div>
+              </div>
+            )}
+
+            {/* Group selection (student signup) */}
+            {mode === 'signup' && role === 'student' && selectedSchoolId && (
+              <div>
+                <label htmlFor="groupSelect" className="block text-sm font-medium text-gray-700 mb-1">
+                  Selecciona tu grupo
+                </label>
+                {availableGroups.length > 0 ? (
+                  <select
+                    id="groupSelect"
+                    value={selectedGroupId ?? ''}
+                    onChange={(e) => setSelectedGroupId(e.target.value || null)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
+                  >
+                    {availableGroups.map((g) => (
+                      <option key={g.id} value={g.id}>{g.name}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="text-sm text-gray-600">
+                    No hay grupos disponibles para esta escuela.
+                  </div>
+                )}
               </div>
             )}
 
