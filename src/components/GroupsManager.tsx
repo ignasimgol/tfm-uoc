@@ -144,6 +144,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
     error: totalsError,
     hasData,
     refresh,
+    topActivities,
   } = useGroupTotals(selectedGroupId)
 
   const [fallbackStudents, setFallbackStudents] = useState<Student[]>([])
@@ -233,8 +234,38 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
             <div className="border-4 border-dashed border-gray-200 rounded-lg p-6 bg-white">
               {(loading || totalsLoading) && <div className="text-black">Loading…</div>}
               {totalsError && <div className="text-red-600">Error: {totalsError}</div>}
-              {/* Insert group totals component */}
               <TotalStatsGroup groupId={selectedGroupId} />
+
+              {/* Top 5 activities */}
+              {!totalsLoading && topActivities.length > 0 && (
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold text-gray-900">Top 5 activities</h2>
+                  <div className="overflow-x-auto mt-2">
+                    <table className="min-w-full text-sm">
+                      <thead className="bg-gray-100 text-left text-gray-900">
+                        <tr>
+                          <th className="px-3 py-2">Activity</th>
+                          <th className="px-3 py-2">Sessions</th>
+                          <th className="px-3 py-2">Total minutes</th>
+                          <th className="px-3 py-2">Avg enjoyment</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {topActivities.map((a) => (
+                          <tr key={a.activity}>
+                            <td className="px-3 py-2 text-black">{a.activity}</td>
+                            <td className="px-3 py-2 text-black">{a.sessions}</td>
+                            <td className="px-3 py-2 text-black">{a.totalMinutes}</td>
+                            <td className="px-3 py-2 text-black">{a.avgEnjoyment}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Students totals */}
               {!(loading || totalsLoading) && Object.keys(statsByStudent).length > 0 && (
                 <div className="space-y-6">
                   <h2 className="text-lg font-semibold text-gray-900">Students totals</h2>

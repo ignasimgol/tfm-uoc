@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { supabase, type TrainingSession } from '../lib/supabase'
 
+// Module-level additions: activity aggregate types and helpers
 export interface Student {
   id: string
   name: string | null
@@ -11,6 +12,13 @@ export interface Student {
 export interface StudentStats {
   totalMinutes: number
   sessions: number
+  avgEnjoyment: number
+}
+
+export interface ActivityAgg {
+  activity: string
+  sessions: number
+  totalMinutes: number
   avgEnjoyment: number
 }
 
@@ -88,9 +96,29 @@ export function computeStatsByStudent(sessions: TrainingSession[]): StatsByStude
   return out
 }
 
+// Aggregate top activities across sessions
+function computeTopActivities(sessions: TrainingSession[]): ActivityAgg[] {
+  const acc: Record<string, { sessions: number; minutes: number; intSum: number }> = {}
+  for (const s of sessions) {
+    const key = s.activity_type || 'Unknown'
+    if (!acc[key]) acc[key] = { sessions: 0, minutes: 0, intSum: 0 }
+    acc[key].sessions += 1
+    acc[key].minutes += s.duration || 0
+    acc[key].intSum += s.intensity || 0
+  }
+  const rows: ActivityAgg[] = Object.keys(acc).map((k) => {
+    const a = acc[k]
+    const avg = a.sessions ? Number((a.intSum / a.sessions).toFixed(2)) : 0
+    return { activity: k, sessions: a.sessions, totalMinutes: a.minutes, avgEnjoyment: avg }
+  })
+  rows.sort((a, b) => (b.sessions - a.sessions) || (b.totalMinutes - a.totalMinutes))
+  return rows.slice(0, 5)
+}
+
 export async function fetchGroupTotals(groupId: string): Promise<{
   students: Student[]
   statsByStudent: StatsByStudent
+  topActivities: ActivityAgg[]
 }> {
   const memberIds = await getGroupMemberIds(groupId)
   const [students, sessions] = await Promise.all([
@@ -98,7 +126,8 @@ export async function fetchGroupTotals(groupId: string): Promise<{
     getSessionsByGroup(groupId),
   ])
   const statsByStudent = computeStatsByStudent(sessions)
-  return { students, statsByStudent }
+  const topActivities = computeTopActivities(sessions)
+  return { students, statsByStudent, topActivities }
 }
 
 // Fallback público: obtener alumnos por un conjunto de IDs
@@ -109,6 +138,7 @@ export async function fetchStudentsByIds(ids: string[]): Promise<Student[]> {
 export function useGroupTotals(groupId: string | null) {
   const [students, setStudents] = useState<Student[]>([])
   const [statsByStudent, setStatsByStudent] = useState<StatsByStudent>({})
+  const [topActivities, setTopActivities] = useState<ActivityAgg[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -116,19 +146,21 @@ export function useGroupTotals(groupId: string | null) {
     if (!groupId) {
       setStudents([])
       setStatsByStudent({})
+      setTopActivities([])
       return
     }
     setLoading(true)
     setError(null)
     console.log('[useGroupTotals] fetch start', { groupId })
     try {
-      const { students, statsByStudent } = await fetchGroupTotals(groupId)
+      const { students, statsByStudent, topActivities } = await fetchGroupTotals(groupId)
       setStudents(students)
       setStatsByStudent(statsByStudent)
+      setTopActivities(topActivities)
       console.log('[useGroupTotals] fetch success', {
         studentsCount: students.length,
         statsKeys: Object.keys(statsByStudent).length,
-        statsIds: Object.keys(statsByStudent),
+        topActivities: topActivities.map((a) => `${a.activity}:${a.sessions}`),
       })
     } catch (e: any) {
       const msg = e?.message ?? 'Unknown error'
@@ -148,6 +180,7 @@ export function useGroupTotals(groupId: string | null) {
   return {
     students,
     statsByStudent,
+    topActivities,
     loading,
     error,
     hasData,
@@ -164,6 +197,7 @@ export default function DataDealer({
   children: (data: {
     students: Student[]
     statsByStudent: StatsByStudent
+    topActivities: ActivityAgg[]
     loading: boolean
     error: string | null
     hasData: boolean
