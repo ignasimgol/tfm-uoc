@@ -1,6 +1,7 @@
 // LandingPage component
 import { useState, useEffect } from 'react'
 import AuthModal from './AuthModal'
+import ThreeBackground from './Three'
 import { IoStatsChart } from 'react-icons/io5'
 import { PiChalkboardTeacherFill } from 'react-icons/pi'
 import { FaCheck } from 'react-icons/fa'
@@ -50,7 +51,11 @@ const LandingPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="relative min-h-screen bg-gray-100">
+      {/* Animated Three.js background */}
+      <ThreeBackground />
+      {/* Foreground content wrapper to ensure it's above the background */}
+      <div className="relative z-10">
       {/* Header */}
       <div className="pt-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
@@ -377,6 +382,7 @@ const LandingPage = () => {
           onToggleMode={handleToggleMode}
         />
       )}
+      </div>
     </div>
   )
 }
