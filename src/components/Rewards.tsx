@@ -5,12 +5,28 @@ import { supabase, type UserRole } from '../lib/supabase'
 
 type SessionLite = {
   date: string
+  created_at?: string | null
   duration: number
   intensity: number
   activity_type: string
 }
 
-const rewardThresholds = [100, 250, 500, 1000, 2000]
+// Expanded minute-based thresholds for more badges
+const rewardThresholds = [100, 250, 500, 750, 1000, 1500, 2000, 3000]
+
+// Category definitions (aligned with ActivityType options in AddActivity.tsx)
+const TEAM_SPORTS = ['basketball', 'football', 'volleyball', 'hockey', 'handball'] as const
+const OUTDOOR_SPORTS = [
+  'running',
+  'bikeSports',
+  'swimming',
+  'climbing',
+  'trekking',
+  'surfing',
+  'skating',
+  'walking',
+  'raquetSports',
+] as const
 
 export default function Rewards({ user }: { user: User }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -22,7 +38,7 @@ export default function Rewards({ user }: { user: User }) {
       setLoading(true)
       const { data, error } = await supabase
         .from('training_sessions')
-        .select('date,duration,intensity,activity_type')
+        .select('date,created_at,duration,intensity,activity_type')
         .eq('student_id', user.id)
         .order('date', { ascending: false })
 
@@ -46,24 +62,23 @@ export default function Rewards({ user }: { user: User }) {
     return { sessionsCount, totalMinutes, avgEnjoyment }
   }, [sessions])
 
-  const byMonth = useMemo(() => {
-    const map: Record<string, { minutes: number; sessions: number }> = {}
-    for (const s of sessions) {
-      const d = new Date(s.date)
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-      if (!map[key]) map[key] = { minutes: 0, sessions: 0 }
-      map[key].minutes += s.duration || 0
-      map[key].sessions += 1
-    }
-    // sort desc by month key
-    return Object.entries(map)
-      .sort(([a], [b]) => (a < b ? 1 : -1))
-      .slice(0, 12)
-  }, [sessions])
-
   const earnedThresholdIndex = rewardThresholds.findIndex((t) => totals.totalMinutes < t)
   const nextTarget =
     earnedThresholdIndex === -1 ? null : rewardThresholds[earnedThresholdIndex]
+
+  // Derived sets for category badges
+  const playedTypes = useMemo(() => {
+    const set = new Set<string>()
+    for (const s of sessions) {
+      if (s.activity_type) set.add(s.activity_type)
+    }
+    return set
+  }, [sessions])
+
+  const teamCompleted = TEAM_SPORTS.filter((t) => playedTypes.has(t))
+  const outdoorCompleted = OUTDOOR_SPORTS.filter((t) => playedTypes.has(t))
+  const teamAchieved = teamCompleted.length === TEAM_SPORTS.length
+  const outdoorAchieved = outdoorCompleted.length === OUTDOOR_SPORTS.length
 
   return (
     <>
@@ -73,9 +88,6 @@ export default function Rewards({ user }: { user: User }) {
           <div className="px-4 py-6 sm:px-0">
             <div className="mb-4 flex items-center justify-between">
               <h1 className="text-2xl font-bold text-black">Your Rewards</h1>
-              <div className="text-sm text-gray-600">
-                Total minutes: <span className="font-semibold">{totals.totalMinutes}</span>
-              </div>
             </div>
 
             {loading ? (
@@ -129,34 +141,64 @@ export default function Rewards({ user }: { user: User }) {
                   )}
                 </div>
 
-                {/* Monthly breakdown */}
+                {/* Category badges */}
                 <div className="rounded-md border bg-white p-4">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-2">Monthly totals</h2>
-                  {byMonth.length === 0 ? (
-                    <div className="text-gray-600">No sessions yet.</div>
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full text-sm">
-                        <thead className="text-left text-gray-600">
-                          <tr>
-                            <th className="px-2 py-1">Month</th>
-                            <th className="px-2 py-1">Minutes</th>
-                            <th className="px-2 py-1">Sessions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {byMonth.map(([month, stats]) => (
-                            <tr key={month} className="border-t">
-                              <td className="px-2 py-1">{month}</td>
-                              <td className="px-2 py-1">{stats.minutes}</td>
-                              <td className="px-2 py-1">{stats.sessions}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-3">Category badges</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Team Sports badge */}
+                    <div className={`rounded-md border p-4 ${teamAchieved ? 'bg-green-50 border-green-300' : 'bg-gray-50'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">🤝</span>
+                          <span className="font-medium text-gray-900">Team Sports</span>
+                        </div>
+                        <span className={`text-sm ${teamAchieved ? 'text-green-700' : 'text-gray-600'}`}>
+                          {teamCompleted.length}/{TEAM_SPORTS.length} completed
+                        </span>
+                      </div>
+                      <div className="mt-3 text-sm text-gray-700">
+                        {teamAchieved ? 'Badge earned: played all team sports!' : 'Play all team sports in the list to earn the badge.'}
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {TEAM_SPORTS.map((t) => (
+                          <span
+                            key={t}
+                            className={`px-2 py-1 rounded-full text-xs border ${playedTypes.has(t) ? 'bg-green-100 border-green-300 text-green-800' : 'bg-gray-100 border-gray-300 text-gray-700'}`}
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  )}
+
+                    {/* Outdoor Sports badge */}
+                    <div className={`rounded-md border p-4 ${outdoorAchieved ? 'bg-green-50 border-green-300' : 'bg-gray-50'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">🌿</span>
+                          <span className="font-medium text-gray-900">Outdoor Sports</span>
+                        </div>
+                        <span className={`text-sm ${outdoorAchieved ? 'text-green-700' : 'text-gray-600'}`}>
+                          {outdoorCompleted.length}/{OUTDOOR_SPORTS.length} completed
+                        </span>
+                      </div>
+                      <div className="mt-3 text-sm text-gray-700">
+                        {outdoorAchieved ? 'Badge earned: outdoor activities completed!' : 'Make all the outdoor activities to earn the badge.'}
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {OUTDOOR_SPORTS.map((t) => (
+                          <span
+                            key={t}
+                            className={`px-2 py-1 rounded-full text-xs border ${playedTypes.has(t) ? 'bg-green-100 border-green-300 text-green-800' : 'bg-gray-100 border-gray-300 text-gray-700'}`}
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                     
               </div>
             )}
           </div>

@@ -194,15 +194,13 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* How it works */}
+
         <section id="how-it-works" className="mt-24">
           <div className="space-y-16">
-            {/* Row 1: Track activities (image left, text right) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               <div className="rounded-2xl border bg-white shadow-sm p-4">
-                <div className="aspect-video rounded-xl bg-gray-100 border flex items-center justify-center text-gray-400">
-                  {/* Replace with a real screenshot */}
-                  <span className="text-sm">Screenshot: Add activity</span>
+                <div className="rounded-xl flex items-center justify-center text-gray-400">
+                  <img src="https://lrb2zwi2zh.ufs.sh/f/Rppf2OXPa5iUXIxD2umjEcZIUVnhJk9YyKFL0sW2qO5eAd8i" alt="tracking" />
                 </div>
               </div>
               <div>
@@ -226,7 +224,6 @@ const LandingPage = () => {
               </div>
             </div>
         
-            {/* Row 2: Manage groups (text left, image right) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               <div className="md:order-first">
                 <div className="text-xs font-semibold text-green-700 tracking-widest mb-2">GROUPS</div>
@@ -249,20 +246,17 @@ const LandingPage = () => {
               </div>
               <div className="md:order-last">
                 <div className="rounded-2xl border bg-white shadow-sm p-4">
-                  <div className="aspect-video rounded-xl bg-gray-100 border flex items-center justify-center text-gray-400">
-                    {/* Replace with a real screenshot */}
-                    <span className="text-sm">Screenshot: Groups & members</span>
+                  <div className="rounded-xl flex items-center justify-center text-gray-400">
+                    <img src="https://lrb2zwi2zh.ufs.sh/f/Rppf2OXPa5iUR58CBfPa5iUlIsCYmM2gJpN0c6dVtRq471Fk" alt="rewards" />
                   </div>
                 </div>
               </div>
             </div>
         
-            {/* Row 3: See results (image left, text right) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               <div className="rounded-2xl border bg-white shadow-sm p-4">
-                <div className="aspect-video rounded-xl bg-gray-100 border flex items-center justify-center text-gray-400">
-                  {/* Replace with a real screenshot */}
-                  <span className="text-sm">Screenshot: Totals & top activities</span>
+                <div className="rounded-xl flex items-center justify-center text-gray-400">
+                 <img src="https://lrb2zwi2zh.ufs.sh/f/Rppf2OXPa5iU0lPUEVOKyh5IaqwnE4dABCNLc1kS8J7HfrQp" alt="teachers" />
                 </div>
               </div>
               <div>
