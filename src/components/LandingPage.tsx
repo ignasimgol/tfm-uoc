@@ -252,7 +252,7 @@ const LandingPage = () => {
               <div className="md:order-last">
                 <div className="rounded-2xl border bg-white shadow-sm p-4">
                   <div className="rounded-xl flex items-center justify-center text-gray-400">
-                    <img src="https://lrb2zwi2zh.ufs.sh/f/Rppf2OXPa5iUR58CBfPa5iUlIsCYmM2gJpN0c6dVtRq471Fk" alt="rewards" />
+                    <img src="https://lrb2zwi2zh.ufs.sh/f/Rppf2OXPa5iU0lPUEVOKyh5IaqwnE4dABCNLc1kS8J7HfrQp" alt="teachers" />
                   </div>
                 </div>
               </div>
@@ -261,17 +261,17 @@ const LandingPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               <div className="rounded-2xl border bg-white shadow-sm p-4">
                 <div className="rounded-xl flex items-center justify-center text-gray-400">
-                 <img src="https://lrb2zwi2zh.ufs.sh/f/Rppf2OXPa5iU0lPUEVOKyh5IaqwnE4dABCNLc1kS8J7HfrQp" alt="teachers" />
+                  <img src="https://lrb2zwi2zh.ufs.sh/f/Rppf2OXPa5iUR58CBfPa5iUlIsCYmM2gJpN0c6dVtRq471Fk" alt="rewards" />
+                 
                 </div>
               </div>
               <div>
                 <div className="text-xs font-semibold text-green-700 tracking-widest mb-2">SUMMARY</div>
                 <h3 className="text-3xl font-bold text-gray-900 leading-tight">
-                  Turn data into insights
+                  Get Badges and achieve different goals
                 </h3>
                 <p className="mt-3 text-gray-600">
-                  See per-student totals, group averages and top activities. Simple visuals help
-                  identify trends and keep everyone motivated.
+                  Earn badges for different goals and track progress. Get motivated and keep your students active!
                 </p>
                 <div className="mt-5 flex gap-3">
                   <button
@@ -293,7 +293,7 @@ const LandingPage = () => {
             <div className="text-left">
               <h2 className="text-3xl font-semibold text-gray-900">About</h2>
               <p className="mt-4 text-gray-700">
-                I’m a teacher with a passion for creating apps. Combining education and technology inspires me to design tools that are both practical and easy to use. Over the years, I’ve seen how the right digital resources can make learning more dynamic, motivating, and accessible for students.
+                Hello! My name is Ignasi and I’m a teacher and a basketball coach with a passion for creating apps. Combining education and technology inspires me to design tools that are both practical and easy to use. Over the years, I’ve seen how the right digital resources can make learning more dynamic, motivating, and accessible for students.
               </p>
               <p className="mt-3 text-gray-700">
                 With more than a decade of experience in education and sports coaching, I’ve always been driven by the idea of helping others grow, not only by improving their performance but also by fostering curiosity and a love for learning. That same motivation led me to explore the world of front-end development, where I can bring ideas to life through interactive and user-friendly designs.

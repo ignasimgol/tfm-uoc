@@ -66,27 +66,27 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
   const validateForm = () => {
     if (!email || !password) {
-      setError('Por favor, rellena todos los campos obligatorios')
+      setError('Please fill in all required fields')
       return false
     }
 
     if (mode === 'signup' && !name) {
-      setError('Por favor, introduce tu nombre')
+      setError('Please enter your name')
       return false
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Por favor, introduce una dirección de email válida')
+      setError('Please enter a valid email address')
       return false
     }
 
     if (password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres')
+      setError('Password must be at least 6 characters')
       return false
     }
 
     if (mode === 'signup' && password !== confirmPassword) {
-      setError('Las contraseñas no coinciden')
+      setError('Passwords do not match')
       return false
     }
 
@@ -147,7 +147,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
           }
 
           if (!data.session) {
-            setError('Por favor, revisa tu email para confirmar tu cuenta antes de iniciar sesión.')
+            setError('Please check your email to confirm your account before signing in.')
             return
           }
         }
@@ -157,13 +157,13 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
       }
     } catch (error: any) {
       if (error.message.includes('Invalid login credentials')) {
-        setError('Email o contraseña incorrectos. Por favor, inténtalo de nuevo.')
+        setError('Incorrect email or password. Please try again.')
       } else if (error.message.includes('Email not confirmed')) {
-        setError('Por favor, revisa tu email y confirma tu cuenta antes de iniciar sesión.')
+        setError('Please check your email and confirm your account before signing in.')
       } else if (error.message.includes('User already registered')) {
-        setError('Ya existe una cuenta con este email. Por favor, intenta iniciar sesión.')
+        setError('An account with this email already exists. Please try signing in.')
       } else {
-        setError(error.message || 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.')
+        setError(error.message || 'An unexpected error occurred. Please try again.')
       }
     } finally {
       setLoading(false)
@@ -179,14 +179,14 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
+      className={`fixed inset-0 ${mode === 'signup' ? 'bg-green-700' : 'bg-gray-600'} bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4`}
       onClick={handleOverlayClick}
     >
       <div className="relative w-full max-w-md bg-white rounded-lg shadow-xl">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-900">
-              {mode === 'login' ? 'Bienvenido de nuevo' : 'Crear cuenta'}
+              {mode === 'login' ? 'Welcome back' : 'Create account'}
             </h3>
             <button
               onClick={onClose}
@@ -203,7 +203,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
             {mode === 'signup' && (
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Nombre completo *
+                  Full name *
                 </label>
                 <input
                   type="text"
@@ -211,7 +211,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  placeholder="Introduce tu nombre completo"
+                  placeholder="Enter your full name"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
                 />
               </div>
@@ -221,22 +221,22 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
             {mode === 'signup' && role === 'student' && (
               <div>
                 <label htmlFor="inviteCode" className="block text-sm font-medium text-gray-700 mb-1">
-                  Código de invitación de la escuela
+                  School invite code
                 </label>
                 <input
                   type="text"
                   id="inviteCode"
                   value={schoolInviteCode}
                   onChange={(e) => setSchoolInviteCode(e.target.value)}
-                  placeholder="Introduce el código proporcionado por tu escuela"
+                  placeholder="Enter the code provided by your school"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
                 />
                 <div className="mt-1 text-xs text-gray-500">
                   {selectedSchoolId
-                    ? 'Escuela encontrada. Selecciona un grupo disponible.'
+                    ? 'School found. Select an available group.'
                     : schoolInviteCode
-                      ? 'Buscando escuela...'
-                      : 'Introduce el código para vincular tu escuela'}
+                      ? 'Searching school...'
+                      : 'Enter the code to link your school'}
                 </div>
               </div>
             )}
@@ -245,7 +245,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
             {mode === 'signup' && role === 'student' && selectedSchoolId && (
               <div>
                 <label htmlFor="groupSelect" className="block text-sm font-medium text-gray-700 mb-1">
-                  Selecciona tu grupo
+                  Select your group
                 </label>
                 {availableGroups.length > 0 ? (
                   <select
@@ -260,7 +260,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                   </select>
                 ) : (
                   <div className="text-sm text-gray-600">
-                    No hay grupos disponibles para esta escuela.
+                    No groups available for this school.
                   </div>
                 )}
               </div>
@@ -268,7 +268,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Dirección de email *
+                Email address *
               </label>
               <input
                 type="email"
@@ -276,14 +276,14 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="Introduce tu email"
+                placeholder="Enter your email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Contraseña *
+                Password *
               </label>
               <div className="relative">
                 <input
@@ -292,7 +292,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="Introduce tu contraseña"
+                  placeholder="Enter your password"
                   className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
                   />
                 <button
@@ -314,7 +314,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
               </div>
               {mode === 'signup' && (
                 <p className="mt-1 text-xs text-gray-500">
-                  La contraseña debe tener al menos 6 caracteres
+                  Password must be at least 6 characters
                 </p>
               )}
             </div>
@@ -322,7 +322,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
             {mode === 'signup' && (
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirmar contraseña *
+                  Confirm password *
                 </label>
                 <div className="relative">
                   <input
@@ -331,7 +331,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    placeholder="Confirma tu contraseña"
+                    placeholder="Confirm your password"
                     className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
                   />
                   <button
@@ -357,7 +357,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
             {mode === 'signup' && (
               <div>
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                  Soy un/a: *
+                  I am a: *
                 </label>
                 <div className="relative">
                   <select
@@ -366,8 +366,8 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                     onChange={(e) => setRole(e.target.value as UserRole)}
                     className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white appearance-none cursor-pointer"
                   >
-                    <option value="student">Estudiante</option>
-                    <option value="teacher">Profesor/a</option>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -392,7 +392,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? (
                 <>
@@ -400,10 +400,10 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  {mode === 'login' ? 'Iniciando sesión...' : 'Creando cuenta...'}
+                  {mode === 'login' ? 'Signing in...' : 'Creating account...'}
                 </>
               ) : (
-                mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'
+                mode === 'login' ? 'Sign in' : 'Sign up'
               )}
             </button>
           </form>
@@ -414,8 +414,8 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
               className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
             >
               {mode === 'login' 
-                ? "¿No tienes cuenta? Regístrate" 
-                : "¿Ya tienes cuenta? Inicia sesión"
+                ? "Don't have an account? Sign up" 
+                : "Already have an account? Sign in"
               }
             </button>
           </div>
