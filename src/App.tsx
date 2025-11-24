@@ -9,6 +9,7 @@ import SchoolLinking from './components/SchoolLinking'
 import Track from './components/Track'
 import GroupsManager from './components/GroupsManager'
 import Rewards from './components/Rewards'
+import ManageLists from './components/ManageLists'
 import './index.css'
 
 function App() {
@@ -113,6 +114,10 @@ function App() {
           <Route 
             path="/groups" 
             element={<GroupsManager user={user} />} 
+          />
+          <Route 
+            path="/manage" 
+            element={<ManageLists />} 
           />
           <Route 
             path="/rewards" 

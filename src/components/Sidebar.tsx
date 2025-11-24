@@ -16,6 +16,7 @@ function Sidebar({ role, onOpenChange }: SidebarProps) {
   const teacherItems = [
     { label: 'Profile', to: '/profile', icon: ProfileIcon },
     { label: 'Groups', to: '/groups', icon: GroupsIcon },
+    { label: 'Manage', to: '/manage', icon: GroupsIcon },
   ]
 
   const studentItems = [
