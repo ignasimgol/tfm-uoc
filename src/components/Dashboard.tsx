@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
+import { Link } from 'react-router-dom'
 import type { UserProfile } from '../lib/supabase'
 import Sidebar from './Sidebar'
 
@@ -233,6 +234,16 @@ function Dashboard({ user }: DashboardProps) {
                     <p className="text-lg text-gray-600">
                       As a student, you can track your exercise progress and view assignments from your teachers.
                     </p>
+                    <div>
+                      <Link
+                        to="/track"
+                        className="inline-flex items-center bg-green-700 hover:bg-black text-white px-4 py-2 rounded-md text-sm font-medium"
+                        aria-label="Start Tracking"
+                        title="Go to tracking page"
+                      >
+                        Start Tracking
+                      </Link>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                       {/* Student-specific content */}
                     </div>
