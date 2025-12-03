@@ -129,13 +129,15 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
       try {
         const rows = await fetchStudentsByIds(missingIds)
         setFallbackStudents((prev) => {
+          let changed = false
           const merged = [...prev]
           for (const s of rows ?? []) {
             if (!merged.find((m) => m.id === s.id)) {
               merged.push({ id: s.id, name: s.name ?? '', email: s.email })
+              changed = true
             }
           }
-          return merged
+          return changed ? merged : prev
         })
       } catch (e) {
         console.error('Error loading missing student profiles', e)
@@ -143,7 +145,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
     }
 
     loadMissingProfiles()
-  }, [selectedGroupId, statsByStudent, totalsStudents, students, fallbackStudents])
+  }, [selectedGroupId, statsByStudent, totalsStudents, students])
 
   // Diccionario de perfiles por ID, combinando todas las fuentes disponibles
   const studentById: Record<string, { name: string | null; email: string } | undefined> = {}

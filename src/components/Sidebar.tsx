@@ -88,8 +88,11 @@ function Sidebar({ role, onOpenChange }: SidebarProps) {
                   `flex items-center gap-3 px-3 py-2 rounded-md transition
                   ${isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`
                 }
-                onClick={() => {
-                  // Cerramos el sidebar al navegar para mantener consistencia
+                onClick={(e) => {
+                  // Fuerza la navegación programática y cierra el sidebar
+                  // Esto evita cualquier caso donde NavLink no cambie de ruta
+                  e.preventDefault()
+                  navigate(to)
                   setIsOpen(false)
                   onOpenChange?.(false)
                 }}
