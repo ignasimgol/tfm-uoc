@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import type { UserRole } from '../lib/supabase'
 
@@ -19,50 +19,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  // Student school/group linking
-  const [schoolInviteCode, setSchoolInviteCode] = useState('')
-  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null)
-  const [availableGroups, setAvailableGroups] = useState<{ id: string; name: string }[]>([])
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
-
-  // Resolve school by invite code and load groups for selection (student signup)
-  useEffect(() => {
-    const resolveSchool = async () => {
-      if (mode !== 'signup' || role !== 'student') return
-      if (!schoolInviteCode || schoolInviteCode.trim().length < 3) {
-        setSelectedSchoolId(null)
-        setAvailableGroups([])
-        setSelectedGroupId(null)
-        return
-      }
-
-      const { data: schools, error } = await supabase
-        .from('schools')
-        .select('id,invite_code')
-        .eq('invite_code', schoolInviteCode.trim())
-        .limit(1)
-
-      if (!error && schools && schools.length > 0) {
-        const schoolId = schools[0].id
-        setSelectedSchoolId(schoolId)
-
-        const { data: groups, error: gErr } = await supabase
-          .from('groups')
-          .select('id,name')
-          .eq('school_id', schoolId)
-          .order('created_at', { ascending: false })
-
-        setAvailableGroups(gErr || !groups ? [] : groups)
-        setSelectedGroupId(groups && groups.length > 0 ? groups[0].id : null)
-      } else {
-        setSelectedSchoolId(null)
-        setAvailableGroups([])
-        setSelectedGroupId(null)
-      }
-    }
-
-    resolveSchool()
-  }, [mode, role, schoolInviteCode])
+  // Invite code and group pre-selection removed; students will link to a school later.
 
   const validateForm = () => {
     if (!email || !password) {
@@ -121,32 +78,11 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                 email: data.user.email,
                 name: name,
                 role: role,
-                school_id: selectedSchoolId ?? null,
+                school_id: null,
               },
             ])
           if (profileError) {
             console.error('Profile creation error:', profileError)
-          }
-
-          // If student, link to selected school and add to selected group
-          if (role === 'student') {
-            if (selectedSchoolId) {
-              await supabase
-                .from('users')
-                .update({ school_id: selectedSchoolId })
-                .eq('id', data.user.id)
-            }
-            if (selectedGroupId) {
-              await supabase
-                .from('group_members')
-                .insert([
-                  {
-                    group_id: selectedGroupId,
-                    student_id: data.user.id,
-                    joined_at: new Date().toISOString(),
-                  },
-                ])
-            }
           }
 
           if (!data.session) {
@@ -217,55 +153,6 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
                   placeholder="Enter your full name"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
                 />
-              </div>
-            )}
-
-            {/* School invite code (student signup) */}
-            {mode === 'signup' && role === 'student' && (
-              <div>
-                <label htmlFor="inviteCode" className="block text-sm font-medium text-gray-700 mb-1">
-                  School invite code
-                </label>
-                <input
-                  type="text"
-                  id="inviteCode"
-                  value={schoolInviteCode}
-                  onChange={(e) => setSchoolInviteCode(e.target.value)}
-                  placeholder="Enter the code provided by your school"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
-                />
-                <div className="mt-1 text-xs text-gray-500">
-                  {selectedSchoolId
-                    ? 'School found. Select an available group.'
-                    : schoolInviteCode
-                      ? 'Searching school...'
-                      : 'Enter the code to link your school'}
-                </div>
-              </div>
-            )}
-
-            {/* Group selection (student signup) */}
-            {mode === 'signup' && role === 'student' && selectedSchoolId && (
-              <div>
-                <label htmlFor="groupSelect" className="block text-sm font-medium text-gray-700 mb-1">
-                  Select your group
-                </label>
-                {availableGroups.length > 0 ? (
-                  <select
-                    id="groupSelect"
-                    value={selectedGroupId ?? ''}
-                    onChange={(e) => setSelectedGroupId(e.target.value || null)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 bg-white"
-                  >
-                    {availableGroups.map((g) => (
-                      <option key={g.id} value={g.id}>{g.name}</option>
-                    ))}
-                  </select>
-                ) : (
-                  <div className="text-sm text-gray-600">
-                    No groups available for this school.
-                  </div>
-                )}
               </div>
             )}
 
