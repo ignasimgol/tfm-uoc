@@ -91,6 +91,7 @@ function Dashboard({ user }: DashboardProps) {
   const [totalStudents, setTotalStudents] = useState<number>(0)
   const [totalGroups, setTotalGroups] = useState<number>(0)
   const [schoolName, setSchoolName] = useState<string | null>(null)
+  const [schoolInviteCode, setSchoolInviteCode] = useState<string | null>(null)
 
   useEffect(() => {
     fetchProfile()
@@ -133,22 +134,25 @@ function Dashboard({ user }: DashboardProps) {
         }
       }
 
-      // School name
+      // School name and invite code
       if (profile?.school_id) {
         const { data: schoolRow, error: schoolError } = await supabase
           .from('schools')
-          .select('name')
+          .select('name, invite_code')
           .eq('id', profile.school_id)
           .single()
 
         if (schoolError) {
           console.error('Error loading school:', schoolError)
           setSchoolName(null)
+          setSchoolInviteCode(null)
         } else {
           setSchoolName(schoolRow?.name ?? null)
+          setSchoolInviteCode(schoolRow?.invite_code ?? null)
         }
       } else {
         setSchoolName(null)
+        setSchoolInviteCode(null)
       }
     }
 
@@ -211,24 +215,32 @@ function Dashboard({ user }: DashboardProps) {
                     <p className="text-lg text-gray-600">
                       Overview of your school and groups.
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Students</h3>
-                        <p className="text-3xl font-bold text-blue-600">{totalStudents}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <div className="bg-white p-6 rounded-lg shadow">
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Students</h3>
+                      <p className="text-3xl font-bold text-blue-600">{totalStudents}</p>
                       
-                      </div>
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Groups</h3>
-                        <p className="text-3xl font-bold text-green-600">{totalGroups}</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-lg shadow">
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Groups</h3>
+                      <p className="text-3xl font-bold text-green-600">{totalGroups}</p>
                         
-                      </div>
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">School</h3>
-                        <p className="text-xl font-semibold text-purple-600">{schoolName ?? 'No school linked'}</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-lg shadow">
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">School</h3>
+                      <p className="text-xl font-semibold text-purple-600">{schoolName ?? 'No school linked'}</p>
+                      {schoolInviteCode && (
+                        <div className="mt-2">
+                          <span className="text-sm text-gray-600">Invite code:</span>
+                          <span className="ml-2 inline-flex items-center px-2.5 py-1 rounded-full bg-gray-100 text-gray-800 text-sm font-mono">
+                            {schoolInviteCode}
+                          </span>
+                        </div>
+                      )}
                         
-                      </div>
                     </div>
                   </div>
+                </div>
                 ) : (
                   <div className="space-y-4">
                     <p className="text-lg text-gray-600">
