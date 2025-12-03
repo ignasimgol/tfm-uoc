@@ -174,7 +174,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                   id="groupSelect"
                   value={selectedGroupId ?? ''}
                   onChange={(e) => setSelectedGroupId(e.target.value || null)}
-                  className="px-3 py-2 rounded-md border bg-white text-gray-700"
+                  className="px-3 py-2 rounded-md border border-black bg-white text-black"
                   aria-label="Seleccionar grupo"
                 >
                   {groups.length === 0 ? (
@@ -201,14 +201,14 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
         </header>
         {showCreate && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-            <div className="bg-white border border-gray-200 rounded-md p-4 flex items-center gap-3">
-              <label htmlFor="newGroupName" className="text-sm text-gray-700">Nombre del grupo</label>
+            <div className="bg-white border border-black rounded-md p-4 flex items-center gap-3 text-black">
+              <label htmlFor="newGroupName" className="text-sm text-black">Nombre del grupo</label>
               <input
                 id="newGroupName"
                 type="text"
                 value={newGroupName}
                 onChange={(e) => setNewGroupName(e.target.value)}
-                className="px-3 py-2 border rounded-md flex-1"
+                className="px-3 py-2 border border-black text-black bg-white rounded-md flex-1 placeholder:text-black/60"
                 placeholder="Ej. 3ºA, Equipo Verde…"
               />
               <button
