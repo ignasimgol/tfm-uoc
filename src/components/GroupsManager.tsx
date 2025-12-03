@@ -24,6 +24,8 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
   const [showCreate, setShowCreate] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
   const [creating, setCreating] = useState(false)
+  const [schoolId, setSchoolId] = useState<string | null>(null)
+  const [createError, setCreateError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadGroups = async () => {
@@ -43,6 +45,23 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
       }
     }
     loadGroups()
+  }, [user.id])
+
+  // Cargar el school_id del profesor (necesario para crear grupos)
+  useEffect(() => {
+    const loadSchool = async () => {
+      const { data, error } = await supabase
+        .from('users')
+        .select('school_id')
+        .eq('id', user.id)
+        .single()
+      if (!error && data) {
+        setSchoolId(data.school_id ?? null)
+      } else {
+        setSchoolId(null)
+      }
+    }
+    loadSchool()
   }, [user.id])
 
   useEffect(() => {
@@ -136,14 +155,35 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
     const name = newGroupName.trim()
     if (!name) return
     try {
+      setCreateError(null)
       setCreating(true)
+      // Validar school_id antes de insertar
+      let sid = schoolId
+      if (!sid) {
+        const { data: sData, error: sErr } = await supabase
+          .from('users')
+          .select('school_id')
+          .eq('id', user.id)
+          .single()
+        if (sErr) {
+          setCreateError('No se pudo obtener la escuela del profesor.')
+          return
+        }
+        sid = sData?.school_id ?? null
+        setSchoolId(sid)
+      }
+      if (!sid) {
+        setCreateError('Tu cuenta no está vinculada a ninguna escuela.')
+        return
+      }
       const { data, error } = await supabase
         .from('groups')
-        .insert({ name, teacher_id: user.id })
+        .insert({ name, teacher_id: user.id, school_id: sid })
         .select('*')
         .single()
       if (error) {
         console.error('Error creating group:', error)
+        setCreateError(error.message || 'Error creando el grupo')
         return
       }
       if (data) {
@@ -154,6 +194,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
       }
     } catch (e) {
       console.error('Unexpected error creating group:', e)
+      setCreateError('Error inesperado creando el grupo')
     } finally {
       setCreating(false)
     }
@@ -191,7 +232,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                   onClick={() => setShowCreate((v) => !v)}
                   aria-expanded={showCreate}
                 >
-                  Crear grupo
+                  Create Group
                 </button>
               
               </div>
@@ -217,7 +258,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                 onClick={handleCreateGroup}
                 disabled={creating || !newGroupName.trim()}
               >
-                {creating ? 'Creando…' : 'Guardar'}
+                {creating ? 'Creating...' : 'Save'}
               </button>
               <button
                 type="button"
@@ -226,6 +267,9 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
               >
                 Cancelar
               </button>
+              {createError && (
+                <span className="text-sm text-red-600 ml-2">{createError}</span>
+              )}
             </div>
           </div>
         )}
