@@ -21,6 +21,9 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
   const [students, setStudents] = useState<Student[]>([])
   const [loading, setLoading] = useState(false)
+  const [showCreate, setShowCreate] = useState(false)
+  const [newGroupName, setNewGroupName] = useState('')
+  const [creating, setCreating] = useState(false)
 
   useEffect(() => {
     const loadGroups = async () => {
@@ -129,6 +132,33 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
     studentById[s.id] = { name: s.name, email: s.email }
   })
 
+  const handleCreateGroup = async () => {
+    const name = newGroupName.trim()
+    if (!name) return
+    try {
+      setCreating(true)
+      const { data, error } = await supabase
+        .from('groups')
+        .insert({ name, teacher_id: user.id })
+        .select('*')
+        .single()
+      if (error) {
+        console.error('Error creating group:', error)
+        return
+      }
+      if (data) {
+        setGroups((prev) => [data, ...prev])
+        setSelectedGroupId(data.id)
+        setShowCreate(false)
+        setNewGroupName('')
+      }
+    } catch (e) {
+      console.error('Unexpected error creating group:', e)
+    } finally {
+      setCreating(false)
+    }
+  }
+
   return (
     <>
       <Sidebar role="teacher" onOpenChange={setIsSidebarOpen} />
@@ -155,12 +185,50 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                     ))
                   )}
                 </select>
-                
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-green-600 text-white text-sm font-medium hover:bg-green-700"
+                  onClick={() => setShowCreate((v) => !v)}
+                  aria-expanded={showCreate}
+                >
+                  Crear grupo
+                </button>
+              
               </div>
             </div>
           
           </div>
         </header>
+        {showCreate && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            <div className="bg-white border border-gray-200 rounded-md p-4 flex items-center gap-3">
+              <label htmlFor="newGroupName" className="text-sm text-gray-700">Nombre del grupo</label>
+              <input
+                id="newGroupName"
+                type="text"
+                value={newGroupName}
+                onChange={(e) => setNewGroupName(e.target.value)}
+                className="px-3 py-2 border rounded-md flex-1"
+                placeholder="Ej. 3ºA, Equipo Verde…"
+              />
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+                onClick={handleCreateGroup}
+                disabled={creating || !newGroupName.trim()}
+              >
+                {creating ? 'Creando…' : 'Guardar'}
+              </button>
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200"
+                onClick={() => { setShowCreate(false); setNewGroupName('') }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
             <div className="border-4 border border-gray-200 rounded-lg p-6 bg-white">

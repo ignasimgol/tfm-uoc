@@ -105,7 +105,10 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { role: role, name: name } },
+          options: {
+            data: { role: role, name: name },
+            emailRedirectTo: 'https://tfm-uoc-step.vercel.app/profile',
+          },
         })
         if (error) throw error
 

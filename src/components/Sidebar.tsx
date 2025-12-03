@@ -89,11 +89,9 @@ function Sidebar({ role, onOpenChange }: SidebarProps) {
                   ${isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`
                 }
                 onClick={() => {
-                  // En móvil cerramos al navegar
-                  if (window.innerWidth < 768) {
-                    setIsOpen(false)
-                    onOpenChange?.(false)
-                  }
+                  // Cerramos el sidebar al navegar para mantener consistencia
+                  setIsOpen(false)
+                  onOpenChange?.(false)
                 }}
               >
                 <Icon />
@@ -155,6 +153,17 @@ function GroupsIcon() {
       <path
         fill="currentColor"
         d="M16 11a4 4 0 1 0-4-4a4 4 0 0 0 4 4zm-8 0a3 3 0 1 0-3-3a3 3 0 0 0 3 3zm8 2c-2.67 0-8 1.34-8 4v1h12v-1c0-2.66-5.33-4-8-4zM8 13c-2.21 0-6 1.11-6 3v1h4v-1c0-1.07.58-2.04 1.57-2.83A10.78 10.78 0 0 1 8 13z"
+      />
+    </svg>
+  )
+}
+
+function HomeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" className="text-gray-700">
+      <path
+        fill="currentColor"
+        d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"
       />
     </svg>
   )
