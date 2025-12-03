@@ -196,7 +196,7 @@ const ManageLists = () => {
       <div className={`min-h-screen bg-gray-50 ${isSidebarOpen ? 'md:pl-72' : 'md:pl-0'}`}>
         <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Manage Students</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mt-4">Manage Students</h2>
         </div>
 
       {error && (
