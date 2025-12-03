@@ -21,6 +21,10 @@ const ManageLists = () => {
   // Guard: only teachers can view
   const isTeacher = currentUser?.role === 'teacher' || currentUser?.is_admin === true
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+  }
+
   useEffect(() => {
     const load = async () => {
       setLoading(true)
@@ -167,6 +171,32 @@ const ManageLists = () => {
       <>
         <Sidebar role={(currentUser?.role ?? 'teacher') as UserRole} onOpenChange={setIsSidebarOpen} />
         <div className={`min-h-screen bg-gray-50 ${isSidebarOpen ? 'md:pl-72' : 'md:pl-0'}`}>
+          <header className="bg-white shadow">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center h-16">
+                <div className="flex items-center">
+                  <h1 className="text-2xl font-bold text-black">STEP</h1>
+                  <span className="ml-4 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                    {currentUser?.role === 'teacher' ? 'Teacher' : 'Student'}
+                  </span>
+                  {currentUser?.is_admin && (
+                    <span className="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                      Admin
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-4">
+                  <span className="text-gray-700">Welcome, {currentUser?.name || currentUser?.email}</span>
+                  <button
+                    onClick={handleSignOut}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
           <div className="p-6">
             <div className="text-gray-700">Loading…</div>
           </div>
@@ -180,6 +210,32 @@ const ManageLists = () => {
       <>
         <Sidebar role={(currentUser?.role ?? 'teacher') as UserRole} onOpenChange={setIsSidebarOpen} />
         <div className={`min-h-screen bg-gray-50 ${isSidebarOpen ? 'md:pl-72' : 'md:pl-0'}`}>
+          <header className="bg-white shadow">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center h-16">
+                <div className="flex items-center">
+                  <h1 className="text-2xl font-bold text-black">STEP</h1>
+                  <span className="ml-4 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                    {currentUser?.role === 'teacher' ? 'Teacher' : 'Student'}
+                  </span>
+                  {currentUser?.is_admin && (
+                    <span className="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                      Admin
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-4">
+                  <span className="text-gray-700">Welcome, {currentUser?.name || currentUser?.email}</span>
+                  <button
+                    onClick={handleSignOut}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
           <div className="p-6">
             <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 text-yellow-800">
               This section is for teachers only.
@@ -194,9 +250,36 @@ const ManageLists = () => {
     <>
       <Sidebar role={(currentUser?.role ?? 'teacher') as UserRole} onOpenChange={setIsSidebarOpen} />
       <div className={`min-h-screen bg-gray-50 ${isSidebarOpen ? 'md:pl-72' : 'md:pl-0'}`}>
+        <header className="bg-white shadow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center">
+                <h1 className="text-2xl font-bold text-black">STEP</h1>
+                <span className="ml-4 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                  {currentUser?.role === 'teacher' ? 'Teacher' : 'Student'}
+                </span>
+                {currentUser?.is_admin && (
+                  <span className="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                    Admin
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-700">Welcome, {currentUser?.name || currentUser?.email}</span>
+                <button
+                  onClick={handleSignOut}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
         <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900 mt-4">Manage Students</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Manage Students</h2>
         </div>
 
       {error && (
