@@ -59,12 +59,14 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
     try {
       if (mode === 'signup') {
+        // Redirección del email de confirmación: usa el dominio actual (dev o prod)
+        const emailRedirectTo = `${window.location.origin}/profile`
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: { role: role, name: name },
-            emailRedirectTo: 'https://tfm-uoc-step.vercel.app/profile',
+            emailRedirectTo,
           },
         })
         if (error) throw error
