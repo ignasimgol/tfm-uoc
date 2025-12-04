@@ -328,7 +328,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
               <button
                 onClick={handleJoinSchool}
                 disabled={loading || (userRole === 'student' && !selectedGroupId)}
-                className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-2 px-4 bg-green-700 hover:bg-black text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Uniéndose...' : `Join ${selectedSchool.name}`}
               </button>
