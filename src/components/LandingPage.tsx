@@ -1,4 +1,3 @@
-// LandingPage component
 import { useState, useEffect } from 'react'
 import AuthModal from './AuthModal'
 import ThreeBackground from './Three'
@@ -20,12 +19,10 @@ const LandingPage = () => {
     setAuthMode(authMode === 'login' ? 'signup' : 'login')
   }
 
-  // Rotating word + fade effect
   const words = ['faster', 'better', 'easier']
   const [wordIndex, setWordIndex] = useState(0)
   const [fading, setFading] = useState(false)
 
-  // Notification for email copy
   const [copiedToast, setCopiedToast] = useState(false)
   const copyEmailToClipboard = async () => {
     try {
@@ -33,7 +30,6 @@ const LandingPage = () => {
       setCopiedToast(true)
       setTimeout(() => setCopiedToast(false), 1600)
     } catch {
-      // fallback: show toast even if clipboard fails
       setCopiedToast(true)
       setTimeout(() => setCopiedToast(false), 1600)
     }
@@ -45,8 +41,8 @@ const LandingPage = () => {
       setTimeout(() => {
         setWordIndex((i) => (i + 1) % words.length)
         setFading(false)
-      }, 200) // fade out duration
-    }, 2500) // cycle frequency
+      }, 200) 
+    }, 2500) 
     return () => clearInterval(interval)
   }, [])
 

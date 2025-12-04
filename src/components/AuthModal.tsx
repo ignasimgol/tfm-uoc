@@ -59,7 +59,6 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
     try {
       if (mode === 'signup') {
-        // Redirección del email de confirmación: configurable por env, con fallback al origen actual
         const redirectBase = import.meta.env.VITE_PUBLIC_SITE_URL || window.location.origin
         const emailRedirectTo = `${redirectBase}/profile`
         const { data, error } = await supabase.auth.signUp({

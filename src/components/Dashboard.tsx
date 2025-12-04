@@ -48,13 +48,10 @@ function Dashboard({ user }: DashboardProps) {
 
     setDeleting(true)
     try {
-      // Delete data depending on role
       if (profile?.role === 'student') {
-        // Student-owned data
         await supabase.from('training_sessions').delete().eq('student_id', user.id)
         await supabase.from('group_members').delete().eq('student_id', user.id)
       } else if (profile?.role === 'teacher') {
-        // Teacher-owned groups and related data
         const { data: teacherGroups, error: groupsErr } = await supabase
           .from('groups')
           .select('id')
@@ -70,11 +67,10 @@ function Dashboard({ user }: DashboardProps) {
         }
       }
 
-      // Delete app profile row
+
       const { error: userDeleteErr } = await supabase.from('users').delete().eq('id', user.id)
       if (userDeleteErr) throw userDeleteErr
 
-      // Sign out from auth (note: deleting the Auth user requires a server-side service role)
       await supabase.auth.signOut()
     } catch (err: any) {
       console.error('Error deleting account:', err)
@@ -84,10 +80,9 @@ function Dashboard({ user }: DashboardProps) {
     }
   }
 
-  // Estado para el despliegue de la Danger Zone
+
   const [dangerOpen, setDangerOpen] = useState(false)
 
-  // Aggregates for teachers
   const [totalStudents, setTotalStudents] = useState<number>(0)
   const [totalGroups, setTotalGroups] = useState<number>(0)
   const [schoolName, setSchoolName] = useState<string | null>(null)
@@ -100,7 +95,6 @@ function Dashboard({ user }: DashboardProps) {
     const loadTeacherAggregates = async () => {
       if (profile?.role !== 'teacher') return
 
-      // Groups owned by the teacher
       const { data: groupsRows, error: groupsError } = await supabase
         .from('groups')
         .select('id')
@@ -114,7 +108,6 @@ function Dashboard({ user }: DashboardProps) {
         const groupIds = (groupsRows ?? []).map((g) => g.id)
         setTotalGroups(groupIds.length)
 
-        // Distinct students across those groups
         if (groupIds.length > 0) {
           const { data: membersRows, error: membersError } = await supabase
             .from('group_members')
@@ -133,7 +126,6 @@ function Dashboard({ user }: DashboardProps) {
         }
       }
 
-      // School name
       if (profile?.school_id) {
         const { data: schoolRow, error: schoolError } = await supabase
           .from('schools')
@@ -191,13 +183,12 @@ function Dashboard({ user }: DashboardProps) {
                 >
                   Sign Out
                 </button>
-                {/* Removed Delete Account from header */}
               </div>
             </div>
           </div>
         </header>
 
-        {/* Main content */}
+        {/* Main */}
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
             <div className="border-4 border border-gray-200 rounded-lg p-8">
@@ -270,10 +261,8 @@ function Dashboard({ user }: DashboardProps) {
                     className="h-5 w-5 text-red-700"
                   >
                     {dangerOpen ? (
-                      // Chevron up
                       <path d="M6.293 14.707a1 1 0 0 0 1.414 0L12 10.414l4.293 4.293a1 1 0 0 0 1.414-1.414l-5-5a1 1 0 0 0-1.414 0l-5 5a1 1 0 0 0 0 1.414z" />
                     ) : (
-                      // Chevron down
                       <path d="M6.293 9.293a1 1 0 0 1 1.414 0L12 13.586l4.293-4.293a1 1 0 0 1 1.414 1.414l-5 5a1 1 0 0 1-1.414 0l-5-5a1 1 0 0 1 0-1.414z" />
                     )}
                   </svg>

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { supabase, type TrainingSession } from '../lib/supabase'
 
-// Module-level additions: activity aggregate types and helpers
 export interface Student {
   id: string
   name: string | null
@@ -24,7 +23,6 @@ export interface ActivityAgg {
 
 export type StatsByStudent = Record<string, StudentStats>
 
-// funciones auxiliares (añadimos logs)
 async function getGroupMemberIds(groupId: string): Promise<string[]> {
   const { data, error } = await supabase
     .from('group_members')
@@ -47,7 +45,7 @@ async function getUsersByIds(ids: string[]): Promise<Student[]> {
   const rows = (data ?? []) as Student[]
   console.log('[getUsersByIds] rows via IN', rows.length, rows)
 
-  // Fallback: si IN devuelve vacío y hay exactamente 1 id, probamos con eq
+
   if (rows.length === 0 && ids.length === 1) {
     const singleId = ids[0]
     const { data: eqData, error: eqErr } = await supabase
@@ -96,7 +94,6 @@ export function computeStatsByStudent(sessions: TrainingSession[]): StatsByStude
   return out
 }
 
-// Aggregate top activities across sessions
 function computeTopActivities(sessions: TrainingSession[]): ActivityAgg[] {
   const acc: Record<string, { sessions: number; minutes: number; intSum: number }> = {}
   for (const s of sessions) {
@@ -130,7 +127,6 @@ export async function fetchGroupTotals(groupId: string): Promise<{
   return { students, statsByStudent, topActivities }
 }
 
-// Fallback público: obtener alumnos por un conjunto de IDs
 export async function fetchStudentsByIds(ids: string[]): Promise<Student[]> {
   return getUsersByIds(ids)
 }
@@ -188,7 +184,6 @@ export function useGroupTotals(groupId: string | null) {
   }
 }
 
-// Optional render-prop component for convenience in views
 export default function DataDealer({
   groupId,
   children,

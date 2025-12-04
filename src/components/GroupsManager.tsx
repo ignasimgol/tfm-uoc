@@ -47,7 +47,6 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
     loadGroups()
   }, [user.id])
 
-  // Cargar el school_id del profesor (necesario para crear grupos)
   useEffect(() => {
     const loadSchool = async () => {
       const { data, error } = await supabase
@@ -104,7 +103,6 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
   const [fallbackStudents, setFallbackStudents] = useState<Student[]>([])
 
   useEffect(() => {
-    // Si no hay alumnos pero sí stats, intentamos cargar por los IDs que falten
     const loadMissingProfiles = async () => {
       if (!selectedGroupId) {
         setFallbackStudents([])
@@ -147,7 +145,6 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
     loadMissingProfiles()
   }, [selectedGroupId, statsByStudent, totalsStudents, students])
 
-  // Diccionario de perfiles por ID, combinando todas las fuentes disponibles
   const studentById: Record<string, { name: string | null; email: string } | undefined> = {}
   ;[...students, ...totalsStudents, ...fallbackStudents].forEach((s) => {
     studentById[s.id] = { name: s.name, email: s.email }
@@ -159,7 +156,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
     try {
       setCreateError(null)
       setCreating(true)
-      // Validar school_id antes de insertar
+
       let sid = schoolId
       if (!sid) {
         const { data: sData, error: sErr } = await supabase
