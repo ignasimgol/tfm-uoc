@@ -121,7 +121,7 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
 
   return (
     <div 
-      className={`fixed inset-0 ${mode === 'signup' ? 'bg-green-700' : 'bg-gray-600'} bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4`}
+      className="fixed inset-0 bg-green-700 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
       onClick={handleOverlayClick}
     >
       <div className="relative w-full max-w-md bg-white rounded-lg shadow-xl">
