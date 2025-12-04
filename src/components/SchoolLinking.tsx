@@ -14,19 +14,18 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   
-  // Join existing school states
   const [searchTerm, setSearchTerm] = useState('')
   const [schools, setSchools] = useState<School[]>([])
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null)
-  // Create new school states
+
   const [schoolName, setSchoolName] = useState('')
   const [location, setLocation] = useState('')
 
-  // NUEVOS ESTADOS NECESARIOS
+
   const [userRole, setUserRole] = useState<UserRole | null>(null)
   const [groups, setGroups] = useState<{ id: string; name: string }[]>([])
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
-  // Load schools when entering join mode. If search term is short, show a default list.
+  
   useEffect(() => {
     if (mode !== 'join') return
     const fetchSchools = async () => {
@@ -56,10 +55,8 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
     fetchSchools()
   }, [mode, searchTerm])
 
-  // Deprecated invite_code search removed; search now handled in the effect above.
 
   useEffect(() => {
-    // Cargar el rol del usuario (para forzar grupo solo a estudiantes)
     const loadRole = async () => {
       const { data, error } = await supabase
         .from('users')
@@ -72,7 +69,6 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
   }, [user.id])
 
   useEffect(() => {
-    // Cuando se selecciona una escuela, cargar sus grupos
     if (!selectedSchool) {
       setGroups([])
       setSelectedGroupId(null)
@@ -97,7 +93,6 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
       setError('Please, select you school')
       return
     }
-    // Si es estudiante, exigir grupo
     if (userRole === 'student' && !selectedGroupId) {
       setError('Please, select a group to join')
       return
@@ -113,7 +108,6 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
         .eq('id', user.id)
       if (error) throw error
 
-      // Insertar la membresía si es estudiante y hay grupo
       if (userRole === 'student' && selectedGroupId) {
         const { error: gmError } = await supabase
           .from('group_members')
@@ -129,15 +123,6 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
     }
   }
 
-  const generateInviteCode = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    let result = ''
-    for (let i = 0; i < 6; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length))
-    }
-    return result
-  }
-
   const handleCreateSchool = async () => {
     if (!schoolName.trim()) {
       setError('Please, typoe the name of your school')
@@ -148,22 +133,18 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
     setError('')
 
     try {
-      // Create new school
       const { data: schoolData, error: schoolError } = await supabase
         .from('schools')
         .insert([
           {
             name: schoolName.trim(),
-            location: location.trim() || null,
-            invite_code: generateInviteCode()
+            location: location.trim() || null
           }
         ])
         .select()
         .single()
 
       if (schoolError) throw schoolError
-
-      // Update user with new school_id and set as admin
       const { error: userError } = await supabase
         .from('users')
         .update({ 
@@ -262,11 +243,10 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                 <label className="block text-sm font-medium text-gray-700">Found schools:</label>
                 <div className="max-h-40 overflow-y-auto space-y-2">
                   {schools.map((school) => (
-                    // Dentro del listado de escuelas encontradas, sustituye el onClick del botón de selección:
                     <button
                       key={school.id}
                       onClick={async () => {
-                        // Primero vincula el perfil a la escuela (solo estudiantes)
+
                         if (userRole === 'student') {
                           const { error } = await supabase
                             .from('users')
@@ -277,7 +257,6 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                             return
                           }
                         }
-                        // Luego establece la selección y carga de grupos funcionará bajo la policy
                         setSelectedSchool(school)
                       }}
                       className={`w-full p-3 text-left border rounded-md transition-colors ${
@@ -286,7 +265,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                     >
                       <div className="font-medium text-gray-900">{school.name}</div>
                       {school.location && <div className="text-sm text-gray-500">{school.location}</div>}
-                      {/* Invite code removed from UI */}
+                      
                     </button>
                   ))}
                 </div>

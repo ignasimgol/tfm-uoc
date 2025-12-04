@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase'
 import Sidebar from './Sidebar'
 import type { Group, GroupMember, UserProfile, UserRole } from '../lib/supabase'
 
-// Teachers-only: list students (filter by group) and reassign student group
 const ManageLists = () => {
   const [loading, setLoading] = useState(true)
   const [savingStudentId, setSavingStudentId] = useState<string | null>(null)
@@ -14,11 +13,10 @@ const ManageLists = () => {
   const [groups, setGroups] = useState<Group[]>([])
   const [students, setStudents] = useState<UserProfile[]>([])
   const [membershipByStudent, setMembershipByStudent] = useState<Record<string, string | null>>({})
-  const [filterGroupId, setFilterGroupId] = useState<string>('') // empty = All groups
+  const [filterGroupId, setFilterGroupId] = useState<string>('') 
   const [swapRowStudentId, setSwapRowStudentId] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
-  // Guard: only teachers can view
   const isTeacher = currentUser?.role === 'teacher' || currentUser?.is_admin === true
 
   const handleSignOut = async () => {
@@ -30,13 +28,11 @@ const ManageLists = () => {
       setLoading(true)
       setError(null)
       try {
-        // Get current user
         const { data: userRes, error: userErr } = await supabase.auth.getUser()
         if (userErr) throw userErr
         const userId = userRes.user?.id
         if (!userId) throw new Error('Not authenticated')
 
-        // Fetch profile
         const { data: profileRows, error: profileErr } = await supabase
           .from('users')
           .select('id,email,name,role,school_id,is_admin,created_at')
@@ -54,7 +50,6 @@ const ManageLists = () => {
           return
         }
 
-        // Load groups for the teacher's school
         if (!profile.school_id) {
           setGroups([])
           setStudents([])
@@ -70,7 +65,6 @@ const ManageLists = () => {
         const schoolGroupIds = (groupsData ?? []).map((g) => g.id)
         setGroups(groupsData ?? [])
 
-        // Load students for the same school
         const { data: studentsData, error: studentsErr } = await supabase
           .from('users')
           .select('id,email,name,role,school_id,is_admin,created_at')
@@ -80,7 +74,6 @@ const ManageLists = () => {
         if (studentsErr) throw studentsErr
         setStudents(studentsData ?? [])
 
-        // Load memberships for these students within school groups
         let map: Record<string, string | null> = {}
         if ((studentsData?.length ?? 0) > 0 && schoolGroupIds.length > 0) {
           const { data: memberships, error: memErr } = await supabase
@@ -89,7 +82,7 @@ const ManageLists = () => {
             .in('group_id', schoolGroupIds)
             .in('student_id', (studentsData ?? []).map((s: UserProfile) => s.id))
           if (memErr) throw memErr
-          // Choose the most recent membership per student (or first available)
+
           const byStudent: Record<string, GroupMember[]> = {}
           const membershipRows = ((memberships ?? []) as unknown as GroupMember[])
           membershipRows.forEach((m: GroupMember) => {
@@ -103,7 +96,7 @@ const ManageLists = () => {
             map[sid] = list[0]?.group_id ?? null
           })
         }
-        // Default to null (unassigned) for students without membership
+
         (studentsData ?? []).forEach((s) => {
           if (map[s.id] === undefined) map[s.id] = null
         })
@@ -128,9 +121,8 @@ const ManageLists = () => {
       setSavingStudentId(studentId)
       setError(null)
 
-      // Find all groups of this school
       const schoolGroupIds = groups.map((g) => g.id)
-      // Remove existing memberships for this student within the school
+
       if (schoolGroupIds.length > 0) {
         const { error: delErr } = await supabase
           .from('group_members')
@@ -140,7 +132,6 @@ const ManageLists = () => {
         if (delErr) throw delErr
       }
 
-      // Insert new membership if a group was selected
       if (newGroupId) {
         const { error: insErr } = await supabase
           .from('group_members')
@@ -148,7 +139,6 @@ const ManageLists = () => {
         if (insErr) throw insErr
       }
 
-      // Move existing sessions of the student in school groups to the new group
       if (schoolGroupIds.length > 0) {
         const { error: updErr } = await supabase
           .from('training_sessions')

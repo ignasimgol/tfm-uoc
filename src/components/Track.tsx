@@ -1,4 +1,3 @@
-// Top-level module (imports + helpers)
 import { useEffect, useMemo, useState } from 'react'
 import Sidebar from './Sidebar'
 import AddActivity, { type Activity, type ActivityType } from './AddActivity'
@@ -45,7 +44,6 @@ function daysInMonth(date: Date) {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
 }
 
-// Componente principal
 function Track({ user }: { user: User }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date())
@@ -54,7 +52,6 @@ function Track({ user }: { user: User }) {
   const [groupId, setGroupId] = useState<string | null>(null)
   const todayKey = getDateKey(new Date())
 
-  // Cargar el primer grupo al que pertenece el alumno
   useEffect(() => {
     const fetchGroup = async () => {
       const { data, error } = await supabase
@@ -69,7 +66,6 @@ function Track({ user }: { user: User }) {
     fetchGroup()
   }, [user.id])
 
-  // Cargar sesiones del mes desde Supabase
   useEffect(() => {
     const loadMonthSessions = async () => {
       const start = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
@@ -110,8 +106,6 @@ function Track({ user }: { user: User }) {
     return [...leadingBlanks, ...days]
   }, [currentMonth])
 
-
-  // Helpers for month/year controls in the calendar toolbar
   const currentYear = currentMonth.getFullYear()
   const currentMonthIndex = currentMonth.getMonth()
   const months: string[] = [
@@ -119,7 +113,7 @@ function Track({ user }: { user: User }) {
     'July','August','September','October','November','December'
   ]
   const yearOptions: number[] = useMemo(() => {
-    // Show a range around current year (adjust as needed)
+
     const start = currentYear - 4
     return Array.from({ length: 9 }, (_, i) => start + i)
   }, [currentYear])
@@ -132,7 +126,6 @@ function Track({ user }: { user: User }) {
 
   const closeForm = () => setSelectedDay(null)
 
-  // Guardar/actualizar en Supabase
   const saveActivity = async (activity: Activity) => {
     const { data: existing, error: findError } = await supabase
       .from('training_sessions')
@@ -172,7 +165,6 @@ function Track({ user }: { user: User }) {
     setSelectedDay(null)
   }
 
-  // Borrar en Supabase y del estado local
   const removeActivity = async (key: string) => {
     await supabase
       .from('training_sessions')

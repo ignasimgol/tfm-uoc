@@ -17,7 +17,6 @@ export default function TotalStatsGroup({ groupId }: { groupId: string | null })
       setLoading(true)
       setError(null)
       try {
-        // Distinct students via group_members
         const { data: membersRows, error: membersErr } = await supabase
           .from('group_members')
           .select('student_id')
@@ -26,7 +25,6 @@ export default function TotalStatsGroup({ groupId }: { groupId: string | null })
         const ids = Array.from(new Set((membersRows ?? []).map((m) => m.student_id)))
         setStudentIds(ids)
 
-        // All sessions for the group
         const { data: sessionRows, error: sessionsErr } = await supabase
           .from('training_sessions')
           .select('student_id,duration,intensity')

@@ -11,10 +11,8 @@ type SessionLite = {
   activity_type: string
 }
 
-// Expanded minute-based thresholds for more badges
 const rewardThresholds = [100, 250, 500, 750, 1000, 1500, 2000, 3000]
 
-// Category definitions (aligned with ActivityType options in AddActivity.tsx)
 const TEAM_SPORTS = ['basketball', 'football', 'volleyball', 'hockey', 'handball'] as const
 const OUTDOOR_SPORTS = [
   'running',
@@ -66,7 +64,6 @@ export default function Rewards({ user }: { user: User }) {
   const nextTarget =
     earnedThresholdIndex === -1 ? null : rewardThresholds[earnedThresholdIndex]
 
-  // Derived sets for category badges
   const playedTypes = useMemo(() => {
     const set = new Set<string>()
     for (const s of sessions) {

@@ -29,7 +29,6 @@ function Sidebar({ role, onOpenChange }: SidebarProps) {
 
   return (
     <>
-      {/* Toggle button visible en móvil y desktop */}
       <button
         aria-label="Toggle sidebar"
         className="fixed top-4 left-4 z-50 p-2 rounded-md bg-white/90 shadow hover:bg-white transition"
@@ -42,7 +41,6 @@ function Sidebar({ role, onOpenChange }: SidebarProps) {
         <MenuIcon />
       </button>
 
-      {/* Overlay solo en móvil */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"
@@ -53,7 +51,6 @@ function Sidebar({ role, onOpenChange }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`
           fixed top-0 left-0 h-full w-72 bg-white border-r border-gray-200 shadow-lg z-50
@@ -89,8 +86,7 @@ function Sidebar({ role, onOpenChange }: SidebarProps) {
                   ${isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`
                 }
                 onClick={(e) => {
-                  // Fuerza la navegación programática y cierra el sidebar
-                  // Esto evita cualquier caso donde NavLink no cambie de ruta
+
                   e.preventDefault()
                   navigate(to)
                   setIsOpen(false)
@@ -103,7 +99,6 @@ function Sidebar({ role, onOpenChange }: SidebarProps) {
             ))}
           </nav>
 
-          {/* Footer (optional) */}
           <div className="px-4 py-3 border-t border-gray-200 text-xs text-gray-500 flex items-center justify-between">
             <span>Role: {role}</span>
             <button

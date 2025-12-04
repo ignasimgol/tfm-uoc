@@ -19,8 +19,6 @@ const AuthModal = ({ mode, onClose, onToggleMode }: AuthModalProps) => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  // Invite code and group pre-selection removed; students will link to a school later.
-
   const validateForm = () => {
     if (!email || !password) {
       setError('Please fill in all required fields')
