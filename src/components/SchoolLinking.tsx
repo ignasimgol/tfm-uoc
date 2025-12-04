@@ -240,7 +240,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
               <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Volver
+              Back
             </button>
 
             <div>
@@ -357,21 +357,21 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                 id="schoolName"
                 value={schoolName}
                 onChange={(e) => setSchoolName(e.target.value)}
-                placeholder="Introduce el nombre de tu escuela"
+                placeholder="type you school's name"
                 className="w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-                Ubicación (opcional)
+                Location (optional)
               </label>
               <input
                 type="text"
                 id="location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="Ciudad, país"
+                placeholder="City"
                 className="w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -381,11 +381,11 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
               disabled={loading || !schoolName.trim()}
               className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creando escuela...' : 'Crear escuela'}
+              {loading ? 'Creating scool...' : 'Create school'}
             </button>
 
             <div className="text-xs text-gray-500 text-center">
-              Al crear una escuela, serás asignado como administrador
+              When you create a school, you will be assigned as administrator
             </div>
           </div>
         )}
