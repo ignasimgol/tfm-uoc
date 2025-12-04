@@ -26,26 +26,37 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
   const [userRole, setUserRole] = useState<UserRole | null>(null)
   const [groups, setGroups] = useState<{ id: string; name: string }[]>([])
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
+  // Load schools when entering join mode. If search term is short, show a default list.
   useEffect(() => {
-    if (mode === 'join' && searchTerm.length > 2) {
-      searchSchools()
+    if (mode !== 'join') return
+    const fetchSchools = async () => {
+      try {
+        if (searchTerm.trim().length > 2) {
+          const { data, error } = await supabase
+            .from('schools')
+            .select('*')
+            .ilike('name', `%${searchTerm}%`)
+            .order('name', { ascending: true })
+            .limit(20)
+          if (error) throw error
+          setSchools(data || [])
+        } else {
+          const { data, error } = await supabase
+            .from('schools')
+            .select('*')
+            .order('name', { ascending: true })
+            .limit(20)
+          if (error) throw error
+          setSchools(data || [])
+        }
+      } catch (error) {
+        console.error('Error loading schools:', error)
+      }
     }
-  }, [searchTerm, mode])
+    fetchSchools()
+  }, [mode, searchTerm])
 
-  const searchSchools = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('schools')
-        .select('*')
-        .or(`name.ilike.%${searchTerm}%,invite_code.ilike.%${searchTerm}%`)
-        .limit(10)
-
-      if (error) throw error
-      setSchools(data || [])
-    } catch (error) {
-      console.error('Error searching schools:', error)
-    }
-  }
+  // Deprecated invite_code search removed; search now handled in the effect above.
 
   useEffect(() => {
     // Cargar el rol del usuario (para forzar grupo solo a estudiantes)
@@ -275,7 +286,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                     >
                       <div className="font-medium text-gray-900">{school.name}</div>
                       {school.location && <div className="text-sm text-gray-500">{school.location}</div>}
-                      <div className="text-xs text-gray-400">Código: {school.invite_code}</div>
+                      {/* Invite code removed from UI */}
                     </button>
                   ))}
                 </div>
