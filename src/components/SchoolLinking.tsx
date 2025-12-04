@@ -245,21 +245,21 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
 
             <div>
               <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
-                Buscar escuela
+                Search for schools
               </label>
               <input
                 type="text"
                 id="search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Nombre de la escuela o código de invitación"
+                placeholder="Name of the school"
                 className="w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
             {schools.length > 0 && (
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Escuelas encontradas:</label>
+                <label className="block text-sm font-medium text-gray-700">Found schools:</label>
                 <div className="max-h-40 overflow-y-auto space-y-2">
                   {schools.map((school) => (
                     // Dentro del listado de escuelas encontradas, sustituye el onClick del botón de selección:
@@ -345,7 +345,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
               <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Volver
+              Back
             </button>
 
             <div>
