@@ -206,7 +206,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-lg font-medium text-gray-900">Unirse a una escuela existente</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Join an existing school</h3>
                   <p className="text-sm text-gray-500">Search by name</p>
                 </div>
               </div>
@@ -330,7 +330,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                 disabled={loading || (userRole === 'student' && !selectedGroupId)}
                 className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Uniéndose...' : `Unirse a ${selectedSchool.name}`}
+                {loading ? 'Uniéndose...' : `Join ${selectedSchool.name}`}
               </button>
             )}
           </div>
