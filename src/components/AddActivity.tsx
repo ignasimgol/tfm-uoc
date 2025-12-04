@@ -153,7 +153,7 @@ export default function AddActivity({ date, initialActivity, onSave, onClose }: 
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
               Cancel
             </button>
-            <button type="submit" className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">
+            <button type="submit" className="px-4 py-2 rounded-md bg-green-700 text-white hover:bg-black">
               Save
             </button>
           </div>
