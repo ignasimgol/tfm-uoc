@@ -94,12 +94,12 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
 
   const handleJoinSchool = async () => {
     if (!selectedSchool) {
-      setError('Por favor, selecciona una escuela')
+      setError('Please, select you school')
       return
     }
     // Si es estudiante, exigir grupo
     if (userRole === 'student' && !selectedGroupId) {
-      setError('Por favor, selecciona un grupo para unirte')
+      setError('Please, select a group to join')
       return
     }
 
@@ -140,7 +140,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
 
   const handleCreateSchool = async () => {
     if (!schoolName.trim()) {
-      setError('Por favor, introduce el nombre de la escuela')
+      setError('Please, typoe the name of your school')
       return
     }
 
@@ -186,10 +186,10 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
       <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-6">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Selecciona tu escuela
+            Select your school
           </h2>
           <p className="text-gray-600">
-            Únete a una escuela existente o crea una nueva
+            Join an existing school or create a new one
           </p>
         </div>
 
@@ -207,7 +207,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                 </div>
                 <div className="ml-3">
                   <h3 className="text-lg font-medium text-gray-900">Unirse a una escuela existente</h3>
-                  <p className="text-sm text-gray-500">Busca por nombre o código de invitación</p>
+                  <p className="text-sm text-gray-500">Search by name</p>
                 </div>
               </div>
             </button>
@@ -223,8 +223,8 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-lg font-medium text-gray-900">Crear una nueva escuela</h3>
-                  <p className="text-sm text-gray-500">Configura tu propia escuela</p>
+                  <h3 className="text-lg font-medium text-gray-900">Create a new school</h3>
+                  <p className="text-sm text-gray-500">Set your own school</p>
                 </div>
               </div>
             </button>

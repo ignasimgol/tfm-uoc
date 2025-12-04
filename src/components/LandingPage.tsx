@@ -72,9 +72,6 @@ const LandingPage = () => {
                 </div>
                 {/* Navigation Links */}
                 <div className="hidden md:flex items-center space-x-8">
-                  <a href="#home" className="text-gray-800 hover:text-green-500 hover:underline font-medium transition-colors">
-                    Home
-                  </a>
                   <a href="#about" className="text-gray-600 hover:text-green-500 hover:underline font-medium transition-colors">
                     About
                   </a>
@@ -364,7 +361,6 @@ const LandingPage = () => {
               <img src="/step-black.png" alt="Step logo" className="h-8" />
             </div>
             <nav className="mt-4 md:mt-0 flex items-center space-x-6">
-              <a href="#home" className="text-gray-600 hover:text-green-500">Home</a>
               <a href="#about" className="text-gray-600 hover:text-green-500">About</a>
               <a href="#contact" className="text-gray-600 hover:text-green-500">Contact</a>
             </nav>
