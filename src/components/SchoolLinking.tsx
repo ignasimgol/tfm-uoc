@@ -197,7 +197,7 @@ function SchoolLinking({ user, onComplete }: SchoolLinkingProps) {
           <div className="space-y-4">
             <button
               onClick={() => setMode('join')}
-              className="w-full p-4 border-2 border-gray-200 rounded-lg bg-green-700 hover:bg-black transition-colors text-left"
+              className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors text-left"
             >
               <div className="flex items-center">
                 <div className="flex-shrink-0">
