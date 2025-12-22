@@ -313,7 +313,7 @@ const LandingPage = () => {
             <div className="mt-8 flex justify-center gap-4">
               <button
                 onClick={copyEmailToClipboard}
-                aria-label="Copiar email"
+                aria-label="Copy email"
                 className="p-4 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors shadow-sm"
               >
                 <FaEnvelope className="text-green-500" size={40} />

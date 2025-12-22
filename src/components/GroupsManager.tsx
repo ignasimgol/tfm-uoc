@@ -209,13 +209,13 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
               <h1 className="text-2xl font-bold text-green-700">Groups</h1>
               {/* Selector de grupo: dropdown + botones */}
               <div className="flex items-center gap-3">
-                <label className="sr-only" htmlFor="groupSelect">Seleccionar grupo</label>
+                <label className="sr-only" htmlFor="groupSelect">Select Group</label>
                 <select
                   id="groupSelect"
                   value={selectedGroupId ?? ''}
                   onChange={(e) => setSelectedGroupId(e.target.value || null)}
                   className="px-3 py-2 rounded-md border border-black bg-white text-black"
-                  aria-label="Seleccionar grupo"
+                  aria-label="Select group"
                 >
                   {groups.length === 0 ? (
                     <option value="">No hay grupos</option>
