@@ -344,7 +344,7 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
               {!(loading || totalsLoading) &&
                 (totalsStudents.length === 0 && students.length === 0 && fallbackStudents.length === 0) &&
                 Object.keys(statsByStudent).length === 0 && (
-                  <div className="text-black">No hay alumnos para este grupo.</div>
+                  <div className="text-black">No students in this group.</div>
               )}
             </div>
           </div>
