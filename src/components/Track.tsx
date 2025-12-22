@@ -276,8 +276,15 @@ function Track({ user }: { user: User }) {
                     })
                     .map(([key, act]) => (
                       <div key={key} className="flex items-center gap-2 px-3 py-2 rounded-md border bg-gray-50">
-                        <span className="text-sm text-gray-700">
-                          {key} — {typeEmoji[act.type]} {act.type} · {act.durationMinutes}m · Enjoyment {act.enjoyment}
+                        <span className="text-sm text-gray-700 flex items-center gap-2">
+                          <span>
+                            {key} — {typeEmoji[act.type]} {act.type} · {act.durationMinutes}m ·
+                          </span>
+                          <span className="inline-flex items-center" aria-label={`Enjoyment: ${act.enjoyment} out of 5`} title="Enjoyment">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <span key={i} className={i < (act.enjoyment ?? 0) ? 'text-yellow-500' : 'text-gray-300'}>★</span>
+                            ))}
+                          </span>
                         </span>
                         <button
                           className="text-red-600 hover:text-red-700 text-xs"
