@@ -293,7 +293,7 @@ function Track({ user }: { user: User }) {
                         </span>
                         <div className="flex items-center gap-1 ml-auto">
                           <button
-                            className="p-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded"
+                            className="p-1 text-black hover:text-green-700 hover:bg-blue-50 rounded"
                             onClick={() => setSelectedDay(key)}
                             title="Edit"
                           >
