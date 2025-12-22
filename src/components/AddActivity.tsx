@@ -128,15 +128,30 @@ export default function AddActivity({ date, initialActivity, onSave, onClose }: 
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Enjoyment</label>
-            <input
-              type="range"
-              min={1}
-              max={5}
-              value={enjoyment}
-              onChange={(e) => setEnjoyment(Number(e.target.value))}
-              className="w-full"
-            />
-            <div className="text-xs text-gray-600">1 (low) — 5 (high): {enjoyment}</div>
+            <div className="flex items-center gap-1" aria-label={`Enjoyment: ${enjoyment} out of 5`}>
+              {Array.from({ length: 5 }, (_, i) => {
+                const value = i + 1
+                const filled = value <= enjoyment
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setEnjoyment(value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'ArrowRight') setEnjoyment(Math.min(5, enjoyment + 1))
+                      if (e.key === 'ArrowLeft') setEnjoyment(Math.max(1, enjoyment - 1))
+                      if (e.key === 'Enter' || e.key === ' ') setEnjoyment(value)
+                    }}
+                    aria-pressed={filled}
+                    aria-label={`${value} star${value > 1 ? 's' : ''}`}
+                    className={`${filled ? 'text-yellow-500' : 'text-gray-300'} text-2xl leading-none focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  >
+                    ★
+                  </button>
+                )
+              })}
+            </div>
+            <div className="text-xs text-gray-600">Selected: {enjoyment} / 5</div>
           </div>
 
           <div>
