@@ -37,7 +37,7 @@ function getDateKey(d: Date) {
 }
 
 function formatDateDisplay(dateKey: string) {
-  const [m, d] = dateKey.split('-')
+  const [, m, d] = dateKey.split('-')
   return `${d}/${m}`
 }
 
