@@ -288,18 +288,18 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                       <thead className="bg-gray-100 text-left text-gray-900">
                         <tr>
                           <th className="px-3 py-2">Activity</th>
-                          <th className="px-3 py-2">Sessions</th>
-                          <th className="px-3 py-2">Total minutes</th>
-                          <th className="px-3 py-2">Avg enjoyment</th>
+                          <th className="px-3 py-2 text-right">Sessions</th>
+                          <th className="px-3 py-2 text-right">Total minutes</th>
+                          <th className="px-3 py-2 text-right">Avg enjoyment</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {topActivities.map((a) => (
                           <tr key={a.activity}>
                             <td className="px-3 py-2 text-black">{a.activity}</td>
-                            <td className="px-3 py-2 text-black">{a.sessions}</td>
-                            <td className="px-3 py-2 text-black">{a.totalMinutes}</td>
-                            <td className="px-3 py-2 text-black">{a.avgEnjoyment}</td>
+                            <td className="px-3 py-2 text-black text-right">{a.sessions}</td>
+                            <td className="px-3 py-2 text-black text-right">{a.totalMinutes}</td>
+                            <td className="px-3 py-2 text-black text-right">{a.avgEnjoyment}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -317,9 +317,9 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                       <thead className="bg-gray-100 text-left text-gray-900">
                         <tr>
                           <th className="px-3 py-2">Student</th>
-                          <th className="px-3 py-2">Total sessions</th>
-                          <th className="px-3 py-2">Total minutes</th>
-                          <th className="px-3 py-2">Avg enjoyment</th>
+                          <th className="px-3 py-2 text-right">Total sessions</th>
+                          <th className="px-3 py-2 text-right">Total minutes</th>
+                          <th className="px-3 py-2 text-right">Avg enjoyment</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
@@ -329,9 +329,9 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                           return (
                             <tr key={id}>
                               <td className="px-3 py-2 text-black">{profile ? (profile.name || profile.email) : 'Student not found'}</td>
-                              <td className="px-3 py-2 text-black">{stats.sessions}</td>
-                              <td className="px-3 py-2 text-black">{stats.totalMinutes}</td>
-                              <td className="px-3 py-2 text-black">{stats.avgEnjoyment}</td>
+                              <td className="px-3 py-2 text-black text-right">{stats.sessions}</td>
+                              <td className="px-3 py-2 text-black text-right">{stats.totalMinutes}</td>
+                              <td className="px-3 py-2 text-black text-right">{stats.avgEnjoyment}</td>
                             </tr>
                           )
                         })}
