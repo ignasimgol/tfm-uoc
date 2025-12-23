@@ -77,7 +77,17 @@ export default function TotalStatsGroup({ groupId }: { groupId: string | null })
           </div>
           <div className="rounded-md border bg-gray-50 p-4 text-center">
             <div className="text-sm text-gray-700">Avg enjoyment</div>
-            <div className="text-2xl font-bold text-purple-600">{totals.avgEnjoyment}</div>
+            <div className="text-2xl font-bold text-purple-600">
+              <span
+                className="inline-flex items-center"
+                aria-label={`Average enjoyment: ${Math.round(totals.avgEnjoyment)} out of 5`}
+                title={`Average enjoyment: ${totals.avgEnjoyment}`}
+              >
+                {Array.from({ length: 5 }, (_, i) => (
+                  <span key={i} className={i < Math.round(totals.avgEnjoyment) ? 'text-yellow-500' : 'text-gray-300'}>★</span>
+                ))}
+              </span>
+            </div>
           </div>
         </div>
       )}
