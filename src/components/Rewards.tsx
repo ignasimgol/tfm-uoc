@@ -105,7 +105,17 @@ export default function Rewards({ user }: { user: User }) {
                   </div>
                   <div className="rounded-md border bg-white p-4">
                     <div className="text-sm text-gray-600">Avg. enjoyment</div>
-                    <div className="text-3xl font-semibold text-purple-600">{totals.avgEnjoyment}</div>
+                    <div className="text-3xl font-semibold text-purple-600">
+                      <span
+                        className="inline-flex items-center"
+                        aria-label={`Average enjoyment: ${Math.round(totals.avgEnjoyment)} out of 5`}
+                        title={`Average enjoyment: ${totals.avgEnjoyment}`}
+                      >
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <span key={i} className={i < Math.round(totals.avgEnjoyment) ? 'text-yellow-500' : 'text-gray-300'}>★</span>
+                        ))}
+                      </span>
+                    </div>
                   </div>
                 </div>
 

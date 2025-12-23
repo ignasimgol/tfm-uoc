@@ -299,7 +299,17 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                             <td className="px-3 py-2 text-black">{a.activity}</td>
                             <td className="px-3 py-2 text-black text-right">{a.sessions}</td>
                             <td className="px-3 py-2 text-black text-right">{a.totalMinutes}</td>
-                            <td className="px-3 py-2 text-black text-right">{a.avgEnjoyment}</td>
+                            <td className="px-3 py-2 text-black text-right">
+                              <span
+                                className="inline-flex items-center justify-end"
+                                aria-label={`Average enjoyment: ${Math.round(a.avgEnjoyment)} out of 5`}
+                                title={`Average enjoyment: ${a.avgEnjoyment}`}
+                              >
+                                {Array.from({ length: 5 }, (_, i) => (
+                                  <span key={i} className={i < Math.round(a.avgEnjoyment) ? 'text-yellow-500' : 'text-gray-300'}>★</span>
+                                ))}
+                              </span>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -331,7 +341,17 @@ export default function GroupsManager({ user }: GroupsManagerProps) {
                               <td className="px-3 py-2 text-black">{profile ? (profile.name || profile.email) : 'Student not found'}</td>
                               <td className="px-3 py-2 text-black text-right">{stats.sessions}</td>
                               <td className="px-3 py-2 text-black text-right">{stats.totalMinutes}</td>
-                              <td className="px-3 py-2 text-black text-right">{stats.avgEnjoyment}</td>
+                              <td className="px-3 py-2 text-black text-right">
+                                <span
+                                  className="inline-flex items-center justify-end"
+                                  aria-label={`Average enjoyment: ${Math.round(stats.avgEnjoyment)} out of 5`}
+                                  title={`Average enjoyment: ${stats.avgEnjoyment}`}
+                                >
+                                  {Array.from({ length: 5 }, (_, i) => (
+                                    <span key={i} className={i < Math.round(stats.avgEnjoyment) ? 'text-yellow-500' : 'text-gray-300'}>★</span>
+                                  ))}
+                                </span>
+                              </td>
                             </tr>
                           )
                         })}
